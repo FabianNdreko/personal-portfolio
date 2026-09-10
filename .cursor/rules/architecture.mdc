@@ -1,0 +1,33 @@
+---
+description: Project folder architecture and where new code belongs
+alwaysApply: true
+---
+
+# Architecture
+
+## Layers
+
+- `app/` — routing only. Pages are thin: fetch via queries, render feature UI.
+- `features/<name>/` — domain modules (`components`, `types`, `data`, `queries`, optional `actions`).
+- `components/ui` — shadcn primitives only.
+- `components/layout` — Header, Footer, Container.
+- `components/shared` — cross-feature UI (not domain-specific).
+- `server/db`, `server/services`, `server/validators` — backend; no UI imports here from features components.
+- `lib/` — utils, constants, shared helpers.
+- `hooks/` — shared client hooks.
+
+## Add something new
+
+**New page:** `app/(site)/<route>/page.tsx` + optional `features/<name>/` + link in `lib/constants.ts`.
+
+**New feature without page (widget/popup):** `features/<name>/` + mount once in `app/(site)/layout.tsx`.
+
+**New API:** `app/api/<resource>/route.ts` → call `server/services/`.
+
+**Chat:** global popup under `features/chat/`, never a `/chat` page unless explicitly requested.
+
+## Do not
+
+- Put business logic or DB calls in `page.tsx`.
+- Put feature-specific UI in `components/ui`.
+- Create empty routes for unknown future pages.
