@@ -126,6 +126,7 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: clip;
     background-image:
       repeating-linear-gradient(
         0deg,

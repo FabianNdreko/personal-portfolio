@@ -15,7 +15,7 @@ export function AboutSection() {
         </span>
       </div>
 
-      <pre className="whitespace-pre-wrap border border-border bg-elevated-2 px-5.5 py-5 font-mono text-[14.5px] leading-relaxed">
+      <pre className="overflow-x-auto whitespace-pre-wrap wrap-break-word border border-border bg-elevated-2 px-4 py-4 font-mono text-[13.5px] leading-relaxed sm:px-5.5 sm:py-5 sm:text-[14.5px]">
         <span className="text-muted-foreground">const </span>
         <span className="text-key">developer</span>
         <span className="text-fg-dim"> = {"{"}</span>
@@ -64,7 +64,7 @@ export function AboutSection() {
       <h1 className="font-display mt-6.5 mb-2 text-[clamp(30px,5vw,44px)] font-bold tracking-tight">
         {SITE.headline}
       </h1>
-      <div className="mb-4 font-mono text-sm text-accent">{SITE.subline}</div>
+      <div className="mb-4 font-mono text-sm wrap-break-word text-accent">{SITE.subline}</div>
       <p className="max-w-prose text-[15.5px] text-muted-foreground">
         {SITE.intro}
       </p>

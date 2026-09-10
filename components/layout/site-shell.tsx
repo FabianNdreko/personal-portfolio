@@ -18,14 +18,23 @@ export function SiteShell({ children }: SiteShellProps) {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setNavOpen(false);
     };
+    const onResize = () => {
+      if (window.matchMedia("(min-width: 768px)").matches) {
+        setNavOpen(false);
+      }
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
+    };
   }, [navOpen]);
 
   return (
     <>
       <Topbar open={navOpen} onToggle={() => setNavOpen((v) => !v)} />
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen overflow-x-clip">
         <div
           className={cn(
             "fixed inset-x-0 top-14 bottom-0 z-34 bg-black/50 md:hidden",
@@ -35,7 +44,7 @@ export function SiteShell({ children }: SiteShellProps) {
           aria-hidden
         />
         <Sidebar open={navOpen} onNavigate={() => setNavOpen(false)} />
-        <div className="min-w-0 flex-1 pb-17.5">{children}</div>
+        <div className="min-w-0 flex-1 overflow-x-clip pb-17.5">{children}</div>
       </div>
       <StatusBar />
     </>

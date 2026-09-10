@@ -18,17 +18,18 @@ export function ContactSection() {
                 : undefined
             }
             className={cn(
-              "group flex items-center justify-between gap-3.5 border-b border-border py-3.5 font-mono text-sm last:border-b-0",
+              "group flex flex-col gap-1 border-b border-border py-3.5 font-mono text-sm last:border-b-0",
+              "sm:flex-row sm:items-center sm:justify-between sm:gap-3.5",
               "transition-[padding] duration-150 hover:pl-1.5 hover:text-accent",
             )}
           >
-            <span className="text-fg-dim">
+            <span className="shrink-0 text-fg-dim">
               <span className="text-accent">$</span> {item.cmd}
             </span>
-            <span className="text-foreground group-hover:text-accent">
+            <span className="min-w-0 break-all text-foreground group-hover:text-accent sm:text-right">
               {item.value}
             </span>
-            <span className="text-xs text-fg-dim opacity-0 transition-opacity group-hover:text-accent group-hover:opacity-100">
+            <span className="hidden text-xs text-fg-dim opacity-0 transition-opacity group-hover:text-accent group-hover:opacity-100 sm:inline">
               run →
             </span>
           </a>

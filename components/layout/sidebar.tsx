@@ -10,36 +10,50 @@ type SidebarProps = {
   onNavigate?: () => void;
 };
 
+type NavSectionId = (typeof NAV_SECTIONS)[number]["id"];
+
 export function Sidebar({ open = false, onNavigate }: SidebarProps) {
-  const [activeId, setActiveId] = useState<string>(NAV_SECTIONS[0].id);
+  const [activeId, setActiveId] = useState<NavSectionId>(NAV_SECTIONS[0].id);
 
   useEffect(() => {
-    const sections = NAV_SECTIONS.map((item) =>
-      document.getElementById(item.id),
-    ).filter(Boolean) as HTMLElement[];
+    const syncActive = () => {
+      const scrolledToBottom =
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight - 2;
 
-    if (sections.length === 0) return;
+      if (scrolledToBottom) {
+        setActiveId(NAV_SECTIONS[NAV_SECTIONS.length - 1].id);
+        return;
+      }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
-    );
+      // Marker just below top chrome so the section under the topbar wins.
+      const marker = window.scrollY + 96;
+      let next: NavSectionId = NAV_SECTIONS[0].id;
 
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+      for (const item of NAV_SECTIONS) {
+        const el = document.getElementById(item.id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        if (top <= marker) next = item.id;
+      }
+
+      setActiveId(next);
+    };
+
+    syncActive();
+    window.addEventListener("scroll", syncActive, { passive: true });
+    window.addEventListener("resize", syncActive);
+    return () => {
+      window.removeEventListener("scroll", syncActive);
+      window.removeEventListener("resize", syncActive);
+    };
   }, []);
 
   return (
     <aside
       className={cn(
-        "fixed top-14 bottom-0 left-0 z-35 flex w-4/5 max-w-75 flex-col border-r border-border bg-background py-5.5 font-mono transition-transform duration-200",
-        "md:sticky md:top-0 md:z-auto md:h-screen md:w-sidebar md:max-w-none md:translate-x-0 md:overflow-y-auto",
+        "fixed top-14 bottom-0 left-0 z-35 flex w-[min(80%,19rem)] flex-col overflow-y-auto border-r border-border bg-background py-5.5 font-mono transition-transform duration-200",
+        "md:sticky md:top-0 md:z-auto md:h-screen md:w-sidebar md:max-w-none md:translate-x-0",
         open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
       )}
     >
@@ -59,7 +73,9 @@ export function Sidebar({ open = false, onNavigate }: SidebarProps) {
           <div className="font-display mt-1.5 text-lg font-bold tracking-tight">
             {SITE.name}
           </div>
-          <div className="mt-1 text-[11.5px] text-accent">{SITE.role}</div>
+          <div className="mt-1 text-[11.5px] leading-snug wrap-break-word text-accent">
+            {SITE.role}
+          </div>
         </div>
       </div>
 
