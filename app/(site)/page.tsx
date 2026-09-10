@@ -10,7 +10,7 @@ export default async function HomePage() {
   const projects = await getProjects();
 
   return (
-    <main className="mx-auto max-w-[760px] px-5 pt-10 pb-8 md:px-10 md:pt-16">
+    <main className="mx-auto max-w-190 px-5 pt-10 pb-8 md:px-10 md:pt-16">
       <div className="flex flex-col gap-14">
         <AboutSection />
         <ProjectsSection projects={projects} />

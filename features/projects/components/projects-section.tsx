@@ -8,7 +8,7 @@ type ProjectsSectionProps = {
 
 export function ProjectsSection({ projects }: ProjectsSectionProps) {
   return (
-    <section id="projects" className="scroll-mt-[26px]">
+    <section id="projects" className="scroll-mt-6.5">
       <SectionLabel>projects/</SectionLabel>
       <Pane filename="projects" meta={`${projects.length} items`}>
         {projects.map((project, index) => (
@@ -16,8 +16,8 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
             key={project.slug}
             className={
               index === projects.length - 1
-                ? "pt-[26px] first:pt-0"
-                : "border-b border-border py-[26px] first:pt-0"
+                ? "pt-6.5 first:pt-0"
+                : "border-b border-border py-6.5 first:pt-0"
             }
           >
             <MediaPlaceholder
@@ -57,7 +57,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
                 ) : null}
               </div>
             </div>
-            <p className="mt-2 mb-3.5 max-w-[60ch] text-[14.5px] text-muted-foreground">
+            <p className="mt-2 mb-3.5 max-w-prose text-[14.5px] text-muted-foreground">
               {project.description}
             </p>
             <div className="flex flex-wrap gap-1.5">

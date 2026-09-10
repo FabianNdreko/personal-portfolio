@@ -25,7 +25,7 @@ export function Pane({
         </span>
         {meta ? <span>{meta}</span> : null}
       </div>
-      <div className={cn("px-[26px] py-[26px] pb-[30px]", bodyClassName)}>
+      <div className={cn("px-6.5 py-6.5 pb-7.5", bodyClassName)}>
         {children}
       </div>
     </div>

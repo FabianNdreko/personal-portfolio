@@ -28,14 +28,14 @@ export function SiteShell({ children }: SiteShellProps) {
       <div className="flex min-h-screen">
         <div
           className={cn(
-            "fixed inset-x-0 top-14 bottom-0 z-[34] bg-black/50 md:hidden",
+            "fixed inset-x-0 top-14 bottom-0 z-34 bg-black/50 md:hidden",
             navOpen ? "block" : "hidden",
           )}
           onClick={() => setNavOpen(false)}
           aria-hidden
         />
         <Sidebar open={navOpen} onNavigate={() => setNavOpen(false)} />
-        <div className="min-w-0 flex-1 pb-[70px]">{children}</div>
+        <div className="min-w-0 flex-1 pb-17.5">{children}</div>
       </div>
       <StatusBar />
     </>

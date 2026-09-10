@@ -38,19 +38,19 @@ export function Sidebar({ open = false, onNavigate }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed top-14 bottom-0 left-0 z-[35] flex w-[82%] max-w-[300px] flex-col border-r border-border bg-background py-[22px] font-mono transition-transform duration-200",
+        "fixed top-14 bottom-0 left-0 z-35 flex w-4/5 max-w-75 flex-col border-r border-border bg-background py-5.5 font-mono transition-transform duration-200",
         "md:sticky md:top-0 md:z-auto md:h-screen md:w-sidebar md:max-w-none md:translate-x-0 md:overflow-y-auto",
         open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
       )}
     >
-      <div className="mb-3.5 flex items-start gap-3.5 border-b border-border px-[22px] pb-[18px]">
+      <div className="mb-3.5 flex items-start gap-3.5 border-b border-border px-5.5 pb-4.5">
         <div
-          className="size-[52px] shrink-0 border border-border-strong bg-elevated-2 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.05)_0_2px,transparent_2px_12px)] bg-cover bg-center"
+          className="size-13 shrink-0 border border-border-strong bg-elevated-2 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.05)_0_2px,transparent_2px_12px)] bg-cover bg-center"
           title="assets/avatar.jpg"
           aria-hidden
         />
         <div className="min-w-0 flex-1">
-          <div className="text-[12px] text-fg-dim">
+          <div className="text-xs text-fg-dim">
             <span className="font-medium text-muted-foreground">
               fabian-ndreko
             </span>{" "}
@@ -95,7 +95,7 @@ export function Sidebar({ open = false, onNavigate }: SidebarProps) {
         })}
       </ul>
 
-      <div className="mt-3.5 flex gap-4 border-t border-border px-[22px] pt-4 text-xs">
+      <div className="mt-3.5 flex gap-4 border-t border-border px-5.5 pt-4 text-xs">
         <Link
           href={SITE.social.github}
           target="_blank"

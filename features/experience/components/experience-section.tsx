@@ -3,7 +3,7 @@ import { EXPERIENCE } from "@/lib/site";
 
 export function ExperienceSection() {
   return (
-    <section id="experience" className="scroll-mt-[26px]">
+    <section id="experience" className="scroll-mt-6.5">
       <SectionLabel>experience.log</SectionLabel>
       <Pane
         filename="experience.log"
@@ -22,13 +22,13 @@ export function ExperienceSection() {
             <div className="mb-2 font-mono text-xs text-fg-dim">
               [<span className="text-accent">{entry.range}</span>]
             </div>
-            <div className="text-[17px] font-semibold">
+            <div className="text-lg font-semibold">
               {entry.role}{" "}
               <span className="font-normal text-muted-foreground">
                 {entry.company}
               </span>
             </div>
-            <ul className="mt-2 max-w-[60ch] list-disc pl-[18px] text-[14.5px] text-muted-foreground">
+            <ul className="mt-2 max-w-prose list-disc pl-4.5 text-[14.5px] text-muted-foreground">
               {entry.bullets.map((bullet) => (
                 <li key={bullet} className="my-1">
                   {bullet}

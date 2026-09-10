@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cmdButtonVariants = cva(
-  "inline-flex items-center gap-2 border px-[18px] py-[11px] font-mono text-[13px] transition-colors",
+  "inline-flex items-center gap-2 border px-4.5 py-2.75 font-mono text-[13px] transition-colors",
   {
     variants: {
       variant: {

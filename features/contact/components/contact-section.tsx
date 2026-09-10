@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export function ContactSection() {
   return (
-    <section id="contact" className="scroll-mt-[26px]">
+    <section id="contact" className="scroll-mt-6.5">
       <SectionLabel>contact.sh</SectionLabel>
       <Pane filename="contact.sh" accent="$" meta="executable">
         {CONTACT_COMMANDS.map((item) => (

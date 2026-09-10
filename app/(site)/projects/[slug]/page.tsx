@@ -37,7 +37,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <main className="mx-auto max-w-[760px] px-5 pt-10 pb-8 md:px-10 md:pt-16">
+    <main className="mx-auto max-w-190 px-5 pt-10 pb-8 md:px-10 md:pt-16">
       <Link
         href="/#projects"
         className="font-mono text-sm text-muted-foreground hover:text-accent"
@@ -48,7 +48,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         {project.title}
       </h1>
       <p className="mt-2 font-mono text-sm text-accent">{project.year}</p>
-      <p className="mt-6 max-w-[60ch] text-muted-foreground">
+      <p className="mt-6 max-w-prose text-muted-foreground">
         {project.description}
       </p>
       <ul className="mt-8 flex flex-wrap gap-2">

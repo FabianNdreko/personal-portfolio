@@ -5,10 +5,10 @@ export function StackSection() {
   const entries = Object.entries(STACK);
 
   return (
-    <section id="stack" className="scroll-mt-[26px]">
+    <section id="stack" className="scroll-mt-6.5">
       <SectionLabel>stack.json</SectionLabel>
       <Pane filename="stack.json" accent="{ }" meta={`${entries.length} keys`}>
-        <div className="font-mono text-[13.5px] leading-[2]">
+        <div className="font-mono text-[13.5px] leading-loose">
           <div>{"{"}</div>
           {entries.map(([key, values], index) => (
             <div key={key} className="pl-5">
@@ -18,7 +18,7 @@ export function StackSection() {
                 <span key={value} className="text-foreground">
                   {value}
                   {valueIndex < values.length - 1 ? (
-                    <span className="mr-[5px] text-fg-dim">,</span>
+                    <span className="mr-1.25 text-fg-dim">,</span>
                   ) : null}
                 </span>
               ))}
