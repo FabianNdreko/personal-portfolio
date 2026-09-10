@@ -1,0 +1,42 @@
+---
+description: Project folder architecture and where new code belongs
+alwaysApply: true
+---
+
+# Architecture
+
+## Layers
+
+- `app/` — routing only. Pages are thin: fetch via queries, render feature UI.
+- `features/<name>/` — domain modules (`components`, `types`, `data`, `queries`, optional `actions`).
+- `components/ui` — shadcn primitives only.
+- `components/layout` — SiteShell, Sidebar, Topbar, StatusBar.
+- `components/shared` — Pane, SectionLabel, CmdButton, MediaPlaceholder.
+- `server/db`, `server/services`, `server/validators` — backend.
+- `lib/site.ts` — static site content (copy, nav, experience, stack, contact).
+- `lib/` — utils, constants, shared helpers.
+- `hooks/` — shared client hooks.
+
+## Design system
+
+- Dark IDE aesthetic: Space Grotesk (display) + IBM Plex Mono.
+- Tokens live in `app/globals.css` (`--background`, `--accent` teal `#1fe0b8`, etc.).
+- Prefer shared components over one-off section styles when repeating patterns.
+
+## Add something new
+
+**New page:** `app/(site)/<route>/page.tsx` + optional `features/<name>/` + nav in `lib/site.ts` if needed.
+
+**New home section:** `features/<name>/components/*-section.tsx` + mount in `app/(site)/page.tsx` + `NAV_SECTIONS` entry.
+
+**New feature without page (widget/popup):** `features/<name>/` + mount once in `SiteShell` / site layout.
+
+**New API:** `app/api/<resource>/route.ts` → call `server/services/`.
+
+**Chat:** global popup under `features/chat/`, never a `/chat` page unless explicitly requested.
+
+## Do not
+
+- Put business logic or DB calls in `page.tsx`.
+- Put feature-specific UI in `components/ui`.
+- Create empty routes for unknown future pages.

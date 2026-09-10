@@ -1,0 +1,15 @@
+---
+description: Next.js App Router conventions for this codebase
+globs: app/**/*.{ts,tsx},features/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Next.js conventions
+
+- Default to Server Components. Add `"use client"` only for interactivity, browser APIs, or client libraries.
+- `params` and `searchParams` are Promises — always `await` them.
+- Use `notFound()` for missing dynamic resources.
+- Mutations → Server Actions in `features/*/actions.ts`.
+- Public HTTP → `app/api/**/route.ts`.
+- Keep `app/(site)/layout.tsx` for site chrome; root `app/layout.tsx` for html/body/fonts only.
+- Prefer composing feature components in pages over large inline JSX in route files.
