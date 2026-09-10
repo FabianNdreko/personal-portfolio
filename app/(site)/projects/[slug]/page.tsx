@@ -37,25 +37,25 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <main>
+    <main className="mx-auto max-w-[760px] px-5 pt-10 pb-8 md:px-10 md:pt-16">
       <Link
-        href="/projects"
-        className="text-sm text-muted-foreground hover:text-foreground"
+        href="/#projects"
+        className="font-mono text-sm text-muted-foreground hover:text-accent"
       >
-        ← Projects
+        ← projects/
       </Link>
-      <h1 className="mt-6 text-3xl font-medium tracking-tight">
+      <h1 className="font-display mt-6 text-3xl font-bold tracking-tight">
         {project.title}
       </h1>
-      <p className="mt-2 text-sm text-muted-foreground">{project.year}</p>
-      <p className="mt-6 max-w-2xl text-muted-foreground">
+      <p className="mt-2 font-mono text-sm text-accent">{project.year}</p>
+      <p className="mt-6 max-w-[60ch] text-muted-foreground">
         {project.description}
       </p>
       <ul className="mt-8 flex flex-wrap gap-2">
         {project.tags.map((tag) => (
           <li
             key={tag}
-            className="border border-border px-2 py-1 text-xs text-muted-foreground"
+            className="border border-border-strong px-2 py-1 font-mono text-xs text-muted-foreground"
           >
             {tag}
           </li>

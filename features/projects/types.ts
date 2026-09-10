@@ -5,4 +5,7 @@ export type Project = {
   description: string;
   tags: string[];
   year: number;
+  imageCaption: string;
+  liveUrl?: string;
+  codeUrl?: string;
 };
