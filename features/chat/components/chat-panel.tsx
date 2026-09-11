@@ -67,7 +67,7 @@ export function ChatPanel({
                       <Sparkle size={12} className="text-accent" weight="fill" />
                     </p>
                     <p className="text-[11px] text-muted-foreground">
-                      Answers from his profile · demo
+                      Answers from his profile
                     </p>
                   </div>
                   <button

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { cannedReply, WELCOME_MESSAGE } from "../data/canned";
+import { WELCOME_MESSAGE } from "../data/canned";
+import { requestChatReply } from "../queries";
 import type { ChatMessage } from "../types";
 import { ChatLauncher } from "./chat-launcher";
 import { ChatPanel } from "./chat-panel";
@@ -13,7 +14,6 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
   const listRef = useRef<HTMLDivElement>(null);
   const idPrefix = useId();
-  const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const node = listRef.current;
@@ -30,13 +30,7 @@ export function ChatWidget() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) window.clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  function send(text?: string) {
+  async function send(text?: string) {
     const value = (text ?? input).trim();
     if (!value || thinking) return;
 
@@ -46,21 +40,36 @@ export function ChatWidget() {
       text: value,
     };
 
-    setMessages((current) => [...current, userMessage]);
+    const nextMessages = [...messages, userMessage];
+    setMessages(nextMessages);
     setInput("");
     setThinking(true);
 
-    timerRef.current = window.setTimeout(() => {
+    try {
+      const reply = await requestChatReply(nextMessages);
       setMessages((current) => [
         ...current,
         {
           id: `${idPrefix}-a-${Date.now()}`,
           role: "assistant",
-          text: cannedReply(value),
+          text: reply,
         },
       ]);
+    } catch (error) {
+      setMessages((current) => [
+        ...current,
+        {
+          id: `${idPrefix}-e-${Date.now()}`,
+          role: "assistant",
+          text:
+            error instanceof Error
+              ? error.message
+              : "Could not answer just now. Try again.",
+        },
+      ]);
+    } finally {
       setThinking(false);
-    }, 700);
+    }
   }
 
   return (
