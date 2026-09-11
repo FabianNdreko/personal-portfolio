@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NAV_SECTIONS, SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -14,9 +15,15 @@ type SidebarProps = {
 type NavSectionId = (typeof NAV_SECTIONS)[number]["id"];
 
 export function Sidebar({ open = false, onNavigate }: SidebarProps) {
+  const pathname = usePathname();
   const [activeId, setActiveId] = useState<NavSectionId>(NAV_SECTIONS[0].id);
 
   useEffect(() => {
+    if (pathname.startsWith("/projects")) {
+      setActiveId("projects");
+      return;
+    }
+
     const syncActive = () => {
       const scrolledToBottom =
         window.scrollY + window.innerHeight >=
@@ -47,7 +54,7 @@ export function Sidebar({ open = false, onNavigate }: SidebarProps) {
       window.removeEventListener("scroll", syncActive);
       window.removeEventListener("resize", syncActive);
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <aside
@@ -91,7 +98,7 @@ export function Sidebar({ open = false, onNavigate }: SidebarProps) {
             return (
               <li key={item.id} className="my-px">
                 <a
-                  href={`#${item.id}`}
+                  href={`/#${item.id}`}
                   onClick={onNavigate}
                   className={cn(
                     "flex items-center rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors",

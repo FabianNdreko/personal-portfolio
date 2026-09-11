@@ -28,7 +28,7 @@ alwaysApply: true
 
 **New page:** `app/(site)/<route>/page.tsx` + optional `features/<name>/` + nav in `lib/site.ts` if needed.
 
-**New home section:** `features/<name>/components/*-section.tsx` + mount in `app/(site)/page.tsx` + `NAV_SECTIONS` entry.
+**New project case study:** add `features/projects/data/<slug>.ts`, register it in `features/projects/data/index.ts`, optional images in `public/images/projects/<slug>/`. URL is `/projects/<slug>` — do not add a new route file.
 
 **New feature without page (widget/popup):** `features/<name>/` + mount once in `SiteShell` / site layout.
 
