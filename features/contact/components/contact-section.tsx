@@ -1,5 +1,6 @@
 import { SectionLabel } from "@/components/shared";
 import { CONTACT_LINKS } from "@/lib/site";
+import { ContactForm } from "./contact-form";
 
 export function ContactSection() {
   return (
@@ -7,9 +8,12 @@ export function ContactSection() {
       <SectionLabel
         index="04"
         title="Contact"
-        description="The fastest way to reach me is email — LinkedIn and GitHub work too."
+        description="Tell me about the role or the project — I usually reply by email."
       />
 
+      <ContactForm />
+
+      <p className="mt-12 mb-2 text-sm text-fg-dim">Or reach me directly</p>
       <ul>
         {CONTACT_LINKS.map((item) => {
           const external = "external" in item && item.external;
@@ -17,13 +21,13 @@ export function ContactSection() {
           return (
             <li
               key={item.href}
-              className="border-b border-border first:[&>a]:pt-0 last:border-b-0"
+              className="border-b border-border last:border-b-0"
             >
               <a
                 href={item.href}
                 target={external ? "_blank" : undefined}
                 rel={external ? "noopener noreferrer" : undefined}
-                className="group grid gap-1 py-5 sm:grid-cols-[11.5rem_1fr] sm:items-center sm:gap-8"
+                className="group grid gap-1 py-4 sm:grid-cols-[11.5rem_1fr] sm:items-center sm:gap-8"
               >
                 <span className="text-sm text-muted-foreground">
                   {item.label}
