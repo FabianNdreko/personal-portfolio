@@ -3,19 +3,21 @@ import { EDUCATION } from "@/lib/site";
 
 export function EducationSection() {
   return (
-    <section id="education" className="scroll-mt-6.5">
-      <SectionLabel>education.md</SectionLabel>
-      <Pane filename="education.md" accent="#" meta="1 entry">
-        <h3 className="font-display mb-1 text-xl font-bold">
+    <section id="education" className="scroll-mt-20 md:scroll-mt-8">
+      <SectionLabel
+        index="04"
+        title="Education"
+        description="The foundation behind the work above."
+      />
+      <Pane>
+        <h3 className="font-display text-xl font-semibold tracking-tight">
           {EDUCATION.degree}
         </h3>
-        <div className="text-[14.5px] text-muted-foreground">
+        <p className="mt-1 text-[15px] text-muted-foreground">
           {EDUCATION.school}
-        </div>
-        <div className="my-2.5 font-mono text-xs text-accent">
-          {EDUCATION.when}
-        </div>
-        <p className="max-w-prose text-[14.5px] text-muted-foreground">
+        </p>
+        <p className="mt-2 text-sm text-accent">{EDUCATION.when}</p>
+        <p className="mt-3 max-w-prose text-[14.5px] leading-relaxed text-muted-foreground">
           {EDUCATION.body}
         </p>
       </Pane>

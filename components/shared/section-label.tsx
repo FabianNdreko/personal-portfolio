@@ -1,12 +1,27 @@
 type SectionLabelProps = {
-  children: React.ReactNode;
+  index?: string;
+  title: string;
+  description?: string;
 };
 
-export function SectionLabel({ children }: SectionLabelProps) {
+export function SectionLabel({ index, title, description }: SectionLabelProps) {
   return (
-    <div className="mb-4.5 flex items-center gap-2.5 font-mono text-xs text-fg-dim">
-      <span>{children}</span>
-      <span className="h-px flex-1 bg-border" aria-hidden />
-    </div>
+    <header className="mb-6">
+      <div className="flex items-baseline gap-3">
+        {index ? (
+          <span className="font-mono text-xs tracking-wide text-accent">
+            {index}
+          </span>
+        ) : null}
+        <h2 className="font-display text-[1.65rem] font-semibold tracking-tight">
+          {title}
+        </h2>
+      </div>
+      {description ? (
+        <p className="mt-1.5 max-w-prose text-[15px] text-muted-foreground">
+          {description}
+        </p>
+      ) : null}
+    </header>
   );
 }

@@ -1,43 +1,43 @@
-import { Pane, SectionLabel } from "@/components/shared";
+import { SectionLabel } from "@/components/shared";
 import { EXPERIENCE } from "@/lib/site";
 
 export function ExperienceSection() {
   return (
-    <section id="experience" className="scroll-mt-6.5">
-      <SectionLabel>experience.log</SectionLabel>
-      <Pane
-        filename="experience.log"
-        accent=">_"
-        meta={`${EXPERIENCE.length} entries`}
-      >
-        {EXPERIENCE.map((entry, index) => (
-          <div
+    <section id="experience" className="scroll-mt-20 md:scroll-mt-8">
+      <SectionLabel
+        index="01"
+        title="Experience"
+        description="Roles across frontend, QA, and freelance full-stack."
+      />
+
+      <ol>
+        {EXPERIENCE.map((entry) => (
+          <li
             key={`${entry.role}-${entry.range}`}
-            className={
-              index === EXPERIENCE.length - 1
-                ? "pt-5 first:pt-0"
-                : "border-b border-border py-5 first:pt-0"
-            }
+            className="grid gap-1 border-b border-border py-7 first:pt-0 last:border-b-0 last:pb-0 sm:grid-cols-[11.5rem_1fr] sm:gap-8"
           >
-            <div className="mb-2 font-mono text-xs text-fg-dim">
-              [<span className="text-accent">{entry.range}</span>]
+            <p className="pt-0.5 text-sm text-muted-foreground">{entry.range}</p>
+            <div>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <h3 className="text-lg font-semibold tracking-tight">
+                  {entry.role}
+                </h3>
+                {entry.current ? (
+                  <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent">
+                    Current
+                  </span>
+                ) : null}
+              </div>
+              <p className="mt-0.5 text-sm text-accent">{entry.company}</p>
+              <ul className="mt-3 max-w-prose list-disc space-y-1.5 pl-4.5 text-[14.5px] leading-relaxed text-muted-foreground">
+                {entry.bullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
             </div>
-            <div className="text-lg font-semibold">
-              {entry.role}{" "}
-              <span className="font-normal text-muted-foreground">
-                {entry.company}
-              </span>
-            </div>
-            <ul className="mt-2 max-w-prose list-disc pl-4.5 text-[14.5px] text-muted-foreground">
-              {entry.bullets.map((bullet) => (
-                <li key={bullet} className="my-1">
-                  {bullet}
-                </li>
-              ))}
-            </ul>
-          </div>
+          </li>
         ))}
-      </Pane>
+      </ol>
     </section>
   );
 }

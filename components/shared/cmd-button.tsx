@@ -3,12 +3,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cmdButtonVariants = cva(
-  "inline-flex items-center gap-2 border px-4.5 py-2.75 font-mono text-[13px] transition-colors",
+  "inline-flex items-center justify-center gap-2 rounded-md border px-4.5 py-2.5 text-sm font-medium transition-colors",
   {
     variants: {
       variant: {
         primary:
-          "border-accent bg-accent font-semibold text-primary-foreground hover:border-accent-dim hover:bg-accent-dim",
+          "border-accent bg-accent text-primary-foreground hover:border-accent-dim hover:bg-accent-dim",
         outline:
           "border-border-strong bg-transparent text-foreground hover:border-accent hover:text-accent",
       },
@@ -24,7 +24,6 @@ type CmdButtonProps = {
   children: React.ReactNode;
   className?: string;
   external?: boolean;
-  showPrompt?: boolean;
 } & VariantProps<typeof cmdButtonVariants>;
 
 export function CmdButton({
@@ -33,26 +32,8 @@ export function CmdButton({
   className,
   variant,
   external,
-  showPrompt = true,
 }: CmdButtonProps) {
   const classes = cn(cmdButtonVariants({ variant }), className);
-  const content = (
-    <>
-      {showPrompt ? (
-        <span
-          className={cn(
-            "opacity-100",
-            variant === "primary"
-              ? "text-primary-foreground/60"
-              : "text-fg-dim",
-          )}
-        >
-          $
-        </span>
-      ) : null}
-      {children}
-    </>
-  );
 
   if (external) {
     return (
@@ -62,14 +43,14 @@ export function CmdButton({
         target="_blank"
         rel="noopener noreferrer"
       >
-        {content}
+        {children}
       </a>
     );
   }
 
   return (
     <Link href={href} className={classes}>
-      {content}
+      {children}
     </Link>
   );
 }

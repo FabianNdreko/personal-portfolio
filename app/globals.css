@@ -48,13 +48,13 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
-  --radius-2xl: 0;
-  --radius-3xl: 0;
-  --radius-4xl: 0;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 1.75rem;
   --spacing-sidebar: 17rem;
 }
 
@@ -85,7 +85,7 @@
   --border-strong: #343a41;
   --input: #23272d;
   --ring: #1fe0b8;
-  --radius: 0;
+  --radius: 0.5rem;
   --chart-1: #1fe0b8;
   --chart-2: #8a909a;
   --chart-3: #565c66;
@@ -127,21 +127,11 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     overflow-x: clip;
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        rgba(255, 255, 255, 0.028) 0px,
-        rgba(255, 255, 255, 0.028) 1px,
-        transparent 1px,
-        transparent 40px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.028) 0px,
-        rgba(255, 255, 255, 0.028) 1px,
-        transparent 1px,
-        transparent 40px
-      );
+    background-image: radial-gradient(
+      ellipse 90% 50% at 50% -10%,
+      rgba(31, 224, 184, 0.07),
+      transparent 55%
+    );
   }
 
   ::selection {

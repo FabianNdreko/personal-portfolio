@@ -1,100 +1,86 @@
-import { CmdButton, MediaPlaceholder } from "@/components/shared";
+import Image from "next/image";
+import { CmdButton, Tag } from "@/components/shared";
 import { SITE } from "@/lib/site";
 
 export function AboutSection() {
-  const { developerObject } = SITE;
-
   return (
-    <section id="about" className="scroll-mt-6.5">
-      <div className="mb-5.5 font-mono text-[13px] text-fg-dim">
-        <span className="text-accent">$</span> whoami
-        <br />
-        <span className="text-muted-foreground">
-          {SITE.whoami}
-          <span className="ml-0.5 inline-block h-3.75 w-2 -translate-y-0.5 bg-accent align-middle animate-[caret-blink_1.1s_steps(1)_infinite]" />
-        </span>
-      </div>
+    <section id="about" className="scroll-mt-20 md:scroll-mt-8">
+      <p className="mb-3 text-sm text-accent">
+        {SITE.shortRole} · {SITE.location}
+      </p>
 
-      <pre className="overflow-x-auto whitespace-pre-wrap wrap-break-word border border-border bg-elevated-2 px-4 py-4 font-mono text-[13.5px] leading-relaxed sm:px-5.5 sm:py-5 sm:text-[14.5px]">
-        <span className="text-muted-foreground">const </span>
-        <span className="text-key">developer</span>
-        <span className="text-fg-dim"> = {"{"}</span>
-        {"\n"}
-        {"  "}
-        <span className="text-key">name</span>
-        <span className="text-fg-dim">: </span>
-        <span className="text-foreground">&quot;{developerObject.name}&quot;</span>
-        <span className="text-fg-dim">,</span>
-        {"\n"}
-        {"  "}
-        <span className="text-key">role</span>
-        <span className="text-fg-dim">: </span>
-        <span className="text-foreground">&quot;{developerObject.role}&quot;</span>
-        <span className="text-fg-dim">,</span>
-        {"\n"}
-        {"  "}
-        <span className="text-key">basedIn</span>
-        <span className="text-fg-dim">: </span>
-        <span className="text-foreground">&quot;{developerObject.basedIn}&quot;</span>
-        <span className="text-fg-dim">,</span>
-        {"\n"}
-        {"  "}
-        <span className="text-key">focus</span>
-        <span className="text-fg-dim">: [</span>
-        {developerObject.focus.map((item, index) => (
-          <span key={item}>
-            <span className="text-foreground">&quot;{item}&quot;</span>
-            {index < developerObject.focus.length - 1 ? (
-              <span className="text-fg-dim">, </span>
-            ) : null}
-          </span>
-        ))}
-        <span className="text-fg-dim">],</span>
-        {"\n"}
-        {"  "}
-        <span className="text-key">available</span>
-        <span className="text-fg-dim">: </span>
-        <span className="text-bool">{String(developerObject.available)}</span>
-        <span className="text-fg-dim">,</span>
-        {"\n"}
-        <span className="text-fg-dim">{"}"}</span>
-        <span className="italic text-fg-dim">;</span>
-      </pre>
-
-      <h1 className="font-display mt-6.5 mb-2 text-[clamp(30px,5vw,44px)] font-bold tracking-tight">
+      <h1 className="font-display mb-3 text-[clamp(32px,5vw,46px)] font-bold tracking-tight">
         {SITE.headline}
       </h1>
-      <div className="mb-4 font-mono text-sm wrap-break-word text-accent">{SITE.subline}</div>
-      <p className="max-w-prose text-[15.5px] text-muted-foreground">
+      <p className="mb-4 max-w-prose text-[17px] leading-relaxed text-muted-foreground">
+        {SITE.subline}
+      </p>
+      <p className="max-w-prose text-[15.5px] leading-relaxed text-muted-foreground">
         {SITE.intro}
       </p>
 
-      <div className="mt-6.5 flex flex-wrap gap-3">
+      <div className="mt-7 flex flex-wrap gap-3">
         <CmdButton href="#contact" variant="primary">
-          get in touch
+          Get in touch
         </CmdButton>
         <CmdButton href={SITE.social.github} external>
-          view github
+          View GitHub
         </CmdButton>
       </div>
 
-      <div className="mt-11 grid grid-cols-1 gap-7 border-t border-border pt-9 sm:grid-cols-[1fr_55]">
+      <dl className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="rounded-xl border border-border bg-elevated px-4 py-3.5">
+          <dt className="text-xs text-fg-dim">Role</dt>
+          <dd className="mt-1 text-sm font-medium">{SITE.shortRole}</dd>
+        </div>
+        <div className="rounded-xl border border-border bg-elevated px-4 py-3.5">
+          <dt className="text-xs text-fg-dim">Based in</dt>
+          <dd className="mt-1 text-sm font-medium">{SITE.location}</dd>
+        </div>
+        <div className="rounded-xl border border-border bg-elevated px-4 py-3.5">
+          <dt className="text-xs text-fg-dim">Status</dt>
+          <dd className="mt-1 flex items-center gap-2 text-sm font-medium">
+            {SITE.available ? (
+              <span
+                className="size-1.75 rounded-full bg-accent shadow-[0_0_0_0_rgba(31,224,184,0.55)] animate-[status-pulse_2s_infinite]"
+                aria-hidden
+              />
+            ) : null}
+            {SITE.available ? SITE.availableLabel : "Not available"}
+          </dd>
+        </div>
+      </dl>
+
+      <div className="mt-4">
+        <p className="mb-2 text-xs text-fg-dim">Focus</p>
+        <div className="flex flex-wrap gap-2">
+          {SITE.focus.map((item) => (
+            <Tag key={item}>{item}</Tag>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 gap-8 border-t border-border pt-10 sm:grid-cols-[1fr_13rem]">
         <div className="order-2 sm:order-1">
-          <div className="mb-4 font-mono text-sm text-accent">// about me</div>
+          <h2 className="font-display mb-4 text-xl font-semibold tracking-tight">
+            About me
+          </h2>
           {SITE.about.map((paragraph) => (
             <p
               key={paragraph.slice(0, 24)}
-              className="mb-3.5 max-w-prose text-[14.5px] text-muted-foreground last:mb-0"
+              className="mb-3.5 max-w-prose text-[15px] leading-relaxed text-muted-foreground last:mb-0"
             >
               {paragraph}
             </p>
           ))}
         </div>
-        <div className="order-1 max-w-50 sm:order-2 sm:max-w-none">
-          <MediaPlaceholder
-            className="aspect-3/4"
-            captionLeft="assets/"
-            captionRight="about.jpg"
+        <div className="relative order-1 aspect-3/4 w-full max-w-56 overflow-hidden rounded-xl border border-border sm:order-2 sm:max-w-none">
+          <Image
+            src={SITE.portrait}
+            alt={SITE.name}
+            fill
+            sizes="(min-width: 640px) 13rem, 14rem"
+            className="object-cover object-top"
           />
         </div>
       </div>

@@ -1,15 +1,13 @@
 import { cn } from "@/lib/utils";
 
 type MediaPlaceholderProps = {
-  captionLeft?: string;
-  captionRight?: string;
+  caption?: string;
   className?: string;
   style?: React.CSSProperties;
 };
 
 export function MediaPlaceholder({
-  captionLeft,
-  captionRight,
+  caption,
   className,
   style,
 }: MediaPlaceholderProps) {
@@ -17,18 +15,15 @@ export function MediaPlaceholder({
     <div>
       <div
         className={cn(
-          "relative border border-border bg-elevated-2",
-          "bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.045)_0_2px,transparent_2px_15px)]",
+          "relative rounded-lg border border-border bg-elevated-2",
+          "bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.04)_0_2px,transparent_2px_16px)]",
           "bg-cover bg-center",
           className,
         )}
         style={style}
       />
-      {captionLeft || captionRight ? (
-        <div className="mt-1.5 flex justify-between gap-2 font-mono text-[11px] text-fg-dim">
-          <span>{captionLeft}</span>
-          <span>{captionRight}</span>
-        </div>
+      {caption ? (
+        <p className="mt-1.5 text-xs text-fg-dim">{caption}</p>
       ) : null}
     </div>
   );

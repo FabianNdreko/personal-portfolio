@@ -1,13 +1,17 @@
-import { Pane, SectionLabel } from "@/components/shared";
-import { CONTACT_COMMANDS } from "@/lib/site";
-import { cn } from "@/lib/utils";
+import { SectionLabel } from "@/components/shared";
+import { CONTACT_LINKS } from "@/lib/site";
 
 export function ContactSection() {
   return (
-    <section id="contact" className="scroll-mt-6.5">
-      <SectionLabel>contact.sh</SectionLabel>
-      <Pane filename="contact.sh" accent="$" meta="executable">
-        {CONTACT_COMMANDS.map((item) => (
+    <section id="contact" className="scroll-mt-20 md:scroll-mt-8">
+      <SectionLabel
+        index="05"
+        title="Contact"
+        description="The fastest way to reach me is email — LinkedIn and GitHub work too."
+      />
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {CONTACT_LINKS.map((item) => (
           <a
             key={item.href}
             href={item.href}
@@ -17,24 +21,15 @@ export function ContactSection() {
                 ? "noopener noreferrer"
                 : undefined
             }
-            className={cn(
-              "group flex flex-col gap-1 border-b border-border py-3.5 font-mono text-sm last:border-b-0",
-              "sm:flex-row sm:items-center sm:justify-between sm:gap-3.5",
-              "transition-[padding] duration-150 hover:pl-1.5 hover:text-accent",
-            )}
+            className="group rounded-xl border border-border bg-elevated px-5 py-4 transition-colors hover:border-accent"
           >
-            <span className="shrink-0 text-fg-dim">
-              <span className="text-accent">$</span> {item.cmd}
-            </span>
-            <span className="min-w-0 break-all text-foreground group-hover:text-accent sm:text-right">
+            <span className="text-xs text-fg-dim">{item.label}</span>
+            <span className="mt-1 block text-sm font-medium break-all group-hover:text-accent">
               {item.value}
-            </span>
-            <span className="hidden text-xs text-fg-dim opacity-0 transition-opacity group-hover:text-accent group-hover:opacity-100 sm:inline">
-              run →
             </span>
           </a>
         ))}
-      </Pane>
+      </div>
     </section>
   );
 }
