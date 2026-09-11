@@ -2,7 +2,7 @@ import { SITE } from "@/lib/site";
 
 export function StatusBar() {
   return (
-    <div className="fixed right-0 bottom-0 left-0 z-30 flex items-center justify-between gap-3 border-t border-border bg-elevated px-4 py-2.5 text-xs text-muted-foreground sm:px-5">
+    <div className="fixed right-0 bottom-0 left-0 z-20 flex items-center justify-between gap-3 border-t border-border bg-elevated px-4 py-2.5 text-xs text-muted-foreground sm:px-5 md:left-sidebar">
       <div className="flex min-w-0 items-center gap-3">
         {SITE.available ? (
           <span className="inline-flex items-center gap-1.5 text-accent">
