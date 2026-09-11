@@ -1,36 +1,43 @@
-import { Pane, SectionLabel } from "@/components/shared";
-import { STACK } from "@/lib/site";
+import { SectionLabel, Tag } from "@/components/shared";
+import { EDUCATION, STACK } from "@/lib/site";
 
 export function StackSection() {
-  const entries = Object.entries(STACK);
-
   return (
-    <section id="stack" className="scroll-mt-6.5">
-      <SectionLabel>stack.json</SectionLabel>
-      <Pane filename="stack.json" accent="{ }" meta={`${entries.length} keys`}>
-        <div className="font-mono text-[13.5px] leading-loose">
-          <div>{"{"}</div>
-          {entries.map(([key, values], index) => (
-            <div key={key} className="pl-5">
-              <span className="text-key">&quot;{key}&quot;</span>
-              <span className="text-fg-dim">: [</span>
-              {values.map((value, valueIndex) => (
-                <span key={value} className="text-foreground">
-                  {value}
-                  {valueIndex < values.length - 1 ? (
-                    <span className="mr-1.25 text-fg-dim">,</span>
-                  ) : null}
-                </span>
+    <section id="stack" className="scroll-mt-20 md:scroll-mt-8">
+      <SectionLabel
+        index="03"
+        title="Stack"
+        description="Tools I use to design, build, ship, and verify software."
+      />
+
+      <dl>
+        {STACK.map((group) => (
+          <div
+            key={group.label}
+            className="grid gap-2.5 border-b border-border py-5 first:pt-0 sm:grid-cols-[11.5rem_1fr] sm:items-baseline sm:gap-8"
+          >
+            <dt className="text-sm font-medium">{group.label}</dt>
+            <dd className="flex flex-wrap gap-1.5">
+              {group.items.map((item) => (
+                <Tag key={item}>{item}</Tag>
               ))}
-              <span className="text-fg-dim">]</span>
-              {index < entries.length - 1 ? (
-                <span className="text-fg-dim">,</span>
-              ) : null}
-            </div>
-          ))}
-          <div>{"}"}</div>
+            </dd>
+          </div>
+        ))}
+        <div className="grid gap-2.5 py-5 sm:grid-cols-[11.5rem_1fr] sm:items-baseline sm:gap-8">
+          <dt className="text-sm font-medium">Education</dt>
+          <dd>
+            <p className="text-lg font-semibold tracking-tight">
+              {EDUCATION.degree}
+            </p>
+            <p className="mt-0.5 text-sm text-accent">{EDUCATION.school}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{EDUCATION.when}</p>
+            <p className="mt-3 max-w-prose text-[14.5px] leading-relaxed text-muted-foreground">
+              {EDUCATION.body}
+            </p>
+          </dd>
         </div>
-      </Pane>
+      </dl>
     </section>
   );
 }

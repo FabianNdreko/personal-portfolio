@@ -11,7 +11,7 @@ alwaysApply: true
 - `features/<name>/` — domain modules (`components`, `types`, `data`, `queries`, optional `actions`).
 - `components/ui` — shadcn primitives only.
 - `components/layout` — SiteShell, Sidebar, Topbar, StatusBar.
-- `components/shared` — Pane, SectionLabel, CmdButton, MediaPlaceholder.
+- `components/shared` — Pane, SectionLabel, CmdButton, MediaPlaceholder, Tag.
 - `server/db`, `server/services`, `server/validators` — backend.
 - `lib/site.ts` — static site content (copy, nav, experience, stack, contact).
 - `lib/` — utils, constants, shared helpers.
@@ -19,7 +19,8 @@ alwaysApply: true
 
 ## Design system
 
-- Dark IDE aesthetic: Space Grotesk (display) + IBM Plex Mono.
+- Dark, readable portfolio: Space Grotesk (headings) + IBM Plex Mono (small labels).
+- Present content as headings, cards, timelines, and tags — not fake terminal or code dumps.
 - Tokens live in `app/globals.css` (`--background`, `--accent` teal `#1fe0b8`, etc.).
 - Prefer shared components over one-off section styles when repeating patterns.
 
@@ -27,7 +28,7 @@ alwaysApply: true
 
 **New page:** `app/(site)/<route>/page.tsx` + optional `features/<name>/` + nav in `lib/site.ts` if needed.
 
-**New home section:** `features/<name>/components/*-section.tsx` + mount in `app/(site)/page.tsx` + `NAV_SECTIONS` entry.
+**New project case study:** add `features/projects/data/<slug>.ts`, register it in `features/projects/data/index.ts`, optional images in `public/images/projects/<slug>/`. URL is `/projects/<slug>` — do not add a new route file.
 
 **New feature without page (widget/popup):** `features/<name>/` + mount once in `SiteShell` / site layout.
 
