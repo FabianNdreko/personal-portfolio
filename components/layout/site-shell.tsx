@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ChatWidget } from "@/features/chat";
 import { Sidebar } from "./sidebar";
 import { StatusBar } from "./status-bar";
 import { Topbar } from "./topbar";
@@ -47,6 +48,7 @@ export function SiteShell({ children }: SiteShellProps) {
         <div className="min-w-0 flex-1 overflow-x-clip pb-17.5">{children}</div>
       </div>
       <StatusBar />
+      <ChatWidget />
     </>
   );
 }
