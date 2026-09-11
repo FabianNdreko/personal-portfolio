@@ -14,7 +14,7 @@ type Status = "idle" | "submitting" | "success" | "mailto" | "error";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
-const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+const WEB3FORMS_ACCESS_KEY = process.env.WEB3FORMS_ACCESS_KEY;
 
 function validate(name: string, email: string, message: string): FieldErrors {
   const errors: FieldErrors = {};
@@ -107,7 +107,7 @@ export function ContactForm() {
         </p>
         <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-muted-foreground">
           {status === "error"
-            ? "Add your Web3Forms access key to NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY in .env, then restart the dev server."
+            ? "Add your Web3Forms access key to WEB3FORMS_ACCESS_KEY in .env, then restart the dev server."
             : status === "mailto"
               ? "Your email app should open with the message filled in. Send it from there, or write me directly."
               : "Thanks — I’ll get back to you by email."}
