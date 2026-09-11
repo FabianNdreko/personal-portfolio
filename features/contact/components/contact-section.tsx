@@ -5,31 +5,45 @@ export function ContactSection() {
   return (
     <section id="contact" className="scroll-mt-20 md:scroll-mt-8">
       <SectionLabel
-        index="05"
+        index="04"
         title="Contact"
         description="The fastest way to reach me is email — LinkedIn and GitHub work too."
       />
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {CONTACT_LINKS.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            target={"external" in item && item.external ? "_blank" : undefined}
-            rel={
-              "external" in item && item.external
-                ? "noopener noreferrer"
-                : undefined
-            }
-            className="group rounded-xl border border-border bg-elevated px-5 py-4 transition-colors hover:border-accent"
-          >
-            <span className="text-xs text-fg-dim">{item.label}</span>
-            <span className="mt-1 block text-sm font-medium break-all group-hover:text-accent">
-              {item.value}
-            </span>
-          </a>
-        ))}
-      </div>
+      <ul>
+        {CONTACT_LINKS.map((item) => {
+          const external = "external" in item && item.external;
+
+          return (
+            <li
+              key={item.href}
+              className="border-b border-border first:[&>a]:pt-0 last:border-b-0"
+            >
+              <a
+                href={item.href}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
+                className="group grid gap-1 py-5 sm:grid-cols-[11.5rem_1fr] sm:items-center sm:gap-8"
+              >
+                <span className="text-sm text-muted-foreground">
+                  {item.label}
+                </span>
+                <span className="flex min-w-0 items-center justify-between gap-4">
+                  <span className="truncate font-medium group-hover:text-accent">
+                    {item.value}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="shrink-0 text-fg-dim transition-colors group-hover:text-accent"
+                  >
+                    {external ? "↗" : "→"}
+                  </span>
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }

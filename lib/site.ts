@@ -41,7 +41,6 @@ export const NAV_SECTIONS = [
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "stack", label: "Stack" },
-  { id: "education", label: "Education" },
   { id: "contact", label: "Contact" },
 ] as const;
 

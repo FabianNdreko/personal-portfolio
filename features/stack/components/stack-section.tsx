@@ -1,5 +1,5 @@
 import { SectionLabel, Tag } from "@/components/shared";
-import { STACK } from "@/lib/site";
+import { EDUCATION, STACK } from "@/lib/site";
 
 export function StackSection() {
   return (
@@ -10,21 +10,34 @@ export function StackSection() {
         description="Tools I use to design, build, ship, and verify software."
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <dl>
         {STACK.map((group) => (
           <div
             key={group.label}
-            className="rounded-xl border border-border bg-elevated px-5 py-4"
+            className="grid gap-2.5 border-b border-border py-5 first:pt-0 sm:grid-cols-[11.5rem_1fr] sm:items-baseline sm:gap-8"
           >
-            <h3 className="mb-3 text-sm font-medium">{group.label}</h3>
-            <div className="flex flex-wrap gap-1.5">
+            <dt className="text-sm font-medium">{group.label}</dt>
+            <dd className="flex flex-wrap gap-1.5">
               {group.items.map((item) => (
                 <Tag key={item}>{item}</Tag>
               ))}
-            </div>
+            </dd>
           </div>
         ))}
-      </div>
+        <div className="grid gap-2.5 py-5 sm:grid-cols-[11.5rem_1fr] sm:items-baseline sm:gap-8">
+          <dt className="text-sm font-medium">Education</dt>
+          <dd>
+            <p className="text-lg font-semibold tracking-tight">
+              {EDUCATION.degree}
+            </p>
+            <p className="mt-0.5 text-sm text-accent">{EDUCATION.school}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{EDUCATION.when}</p>
+            <p className="mt-3 max-w-prose text-[14.5px] leading-relaxed text-muted-foreground">
+              {EDUCATION.body}
+            </p>
+          </dd>
+        </div>
+      </dl>
     </section>
   );
 }
