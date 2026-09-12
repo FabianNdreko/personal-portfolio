@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SectionLabel, Tag } from "@/components/shared";
 import type { Project } from "../types";
 import { projectPath } from "../types";
+import { OtherProjectsCta } from "./other-projects-cta";
 import { ProjectCover } from "./project-cover";
 
 type ProjectsSectionProps = {
@@ -61,6 +62,8 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
             </div>
           </article>
         ))}
+
+        <OtherProjectsCta />
       </div>
     </section>
   );
