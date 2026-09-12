@@ -29,7 +29,7 @@ export function ProjectCover({
   return (
     <div
       className={cn(
-        "relative aspect-video overflow-hidden border border-border bg-elevated-2",
+        "overflow-hidden border border-border bg-elevated-2",
         rounded ? "rounded-xl" : "rounded-none border-0",
         className,
       )}
@@ -37,9 +37,10 @@ export function ProjectCover({
       <Image
         src={project.cover}
         alt={project.title}
-        fill
+        width={1920}
+        height={1080}
         sizes="(min-width: 768px) 48rem, 100vw"
-        className="object-cover"
+        className="h-auto w-full"
       />
     </div>
   );

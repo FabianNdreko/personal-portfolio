@@ -1,16 +1,20 @@
-import { EDUCATION, EXPERIENCE, SITE, STACK } from "@/lib/site";
+import {
+  EDUCATION,
+  EXPERIENCE,
+  SITE,
+  plainBullet,
+  skillsFromExperience,
+} from "@/lib/site";
 import { projects } from "@/features/projects/data";
 
 export function buildProfileContext(): string {
   const experience = EXPERIENCE.map((entry) => {
     const flag = entry.current ? " (current)" : "";
-    const bullets = entry.bullets.map((bullet) => `  - ${bullet}`).join("\n");
+    const bullets = entry.bullets
+      .map((bullet) => `  - ${plainBullet(bullet)}`)
+      .join("\n");
     return `- ${entry.role} at ${entry.company} (${entry.range})${flag}\n${bullets}`;
   }).join("\n");
-
-  const stack = STACK.map(
-    (group) => `- ${group.label}: ${group.items.join(", ")}`,
-  ).join("\n");
 
   const projectLines = projects
     .map(
@@ -38,10 +42,10 @@ export function buildProfileContext(): string {
     "",
     "Education:",
     `- ${EDUCATION.degree} — ${EDUCATION.school} (${EDUCATION.when})`,
-    EDUCATION.body,
+    plainBullet(EDUCATION.body),
     "",
-    "Stack:",
-    stack,
+    "Skills used across roles:",
+    skillsFromExperience().join(", "),
     "",
     "Selected projects:",
     projectLines,
@@ -53,7 +57,7 @@ export const CHAT_SYSTEM_PROMPT = `You are the on-site assistant for ${SITE.name
 Scope — you may ONLY discuss:
 - His background, roles, companies, dates, and responsibilities
 - His education
-- His tech stack and how he has used it
+- His tech skills as used in those roles
 - His projects as listed in the profile
 - How to contact him (email, form, LinkedIn, GitHub, phone)
 - Whether he is available for work, and that he is open to frontend, backend, full-stack, or QA, locally or remote

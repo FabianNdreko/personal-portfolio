@@ -51,6 +51,32 @@ export function ProjectDetail({ project, previous, next }: ProjectDetailProps) {
             ) : null}
           </div>
         ) : null}
+        {project.demoLogin ? (
+          <div className="mt-5 max-w-md rounded-xl border border-border bg-elevated px-4 py-3.5">
+            <p className="text-xs font-medium tracking-wide text-accent uppercase">
+              Demo login
+            </p>
+            {project.demoLogin.note ? (
+              <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+                {project.demoLogin.note}
+              </p>
+            ) : null}
+            <dl className="mt-3 space-y-1.5 text-[13.5px]">
+              <div className="flex flex-wrap gap-x-2 gap-y-0.5">
+                <dt className="text-fg-dim">Email</dt>
+                <dd className="font-mono text-foreground">
+                  {project.demoLogin.email}
+                </dd>
+              </div>
+              <div className="flex flex-wrap gap-x-2 gap-y-0.5">
+                <dt className="text-fg-dim">Password</dt>
+                <dd className="font-mono text-foreground">
+                  {project.demoLogin.password}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        ) : null}
       </header>
 
       <div className="mt-10">

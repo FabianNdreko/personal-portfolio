@@ -15,6 +15,12 @@ export type Project = {
   cover?: string;
   liveUrl?: string;
   codeUrl?: string;
+  /** Public demo account for the live app (optional). */
+  demoLogin?: {
+    email: string;
+    password: string;
+    note?: string;
+  };
   overview: string[];
   highlights: string[];
   sections: ProjectSection[];

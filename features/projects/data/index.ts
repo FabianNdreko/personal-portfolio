@@ -1,7 +1,5 @@
 import type { Project } from "../types";
-import { bookingPlatform } from "./booking-platform";
-import { commerceDashboard } from "./commerce-dashboard";
-import { qaAutomationSuite } from "./qa-automation-suite";
+import { barberSaas } from "./barber-saas";
 
 /**
  * How to add a project
@@ -10,8 +8,4 @@ import { qaAutomationSuite } from "./qa-automation-suite";
  * 3. Optional cover: `public/images/projects/<slug>/cover.jpg`.
  * The route `/projects/<slug>` is generated from the slug — no new page file.
  */
-export const projects: Project[] = [
-  commerceDashboard,
-  qaAutomationSuite,
-  bookingPlatform,
-];
+export const projects: Project[] = [barberSaas];

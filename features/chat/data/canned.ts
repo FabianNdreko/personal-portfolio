@@ -1,9 +1,9 @@
-import { EDUCATION, EXPERIENCE, SITE, STACK } from "@/lib/site";
+import { EDUCATION, EXPERIENCE, SITE } from "@/lib/site";
 import type { ChatMessage } from "../types";
 
 export const CHAT_SUGGESTIONS = [
   "Is he available?",
-  "What's his stack?",
+  "What tech does he use?",
   "Where has he worked?",
   "How do I reach him?",
 ] as const;
@@ -11,7 +11,7 @@ export const CHAT_SUGGESTIONS = [
 export const WELCOME_MESSAGE: ChatMessage = {
   id: "welcome",
   role: "assistant",
-  text: `Hi — I can walk you through ${SITE.name}'s work, stack, and how to get in touch. What do you want to know?`,
+  text: `Hi — I can walk you through ${SITE.name}'s work, the tech he uses on the job, and how to get in touch. What do you want to know?`,
 };
 
 export function cannedReply(question: string): string {
@@ -33,12 +33,20 @@ export function cannedReply(question: string): string {
     q.includes("tech") ||
     q.includes("language") ||
     q.includes("framework") ||
-    q.includes("tools")
+    q.includes("tools") ||
+    q.includes("skill")
   ) {
-    const lines = STACK.map(
-      (group) => `${group.label}: ${group.items.join(", ")}`,
-    );
-    return `He works across frontend, backend, and QA.\n\n${lines.join("\n")}`;
+    const byRole = EXPERIENCE.map((entry) => {
+      const skills = [
+        ...new Set(
+          entry.bullets.flatMap((bullet) =>
+            [...bullet.matchAll(/\*\*(.+?)\*\*/g)].map((m) => m[1]),
+          ),
+        ),
+      ];
+      return `${entry.role} @ ${entry.company}: ${skills.join(", ")}`;
+    });
+    return `He picks tools per role — not a separate stack list:\n\n${byRole.join("\n")}`;
   }
 
   if (
@@ -93,5 +101,5 @@ export function cannedReply(question: string): string {
     return `${SITE.name} — ${SITE.role}. ${SITE.intro}`;
   }
 
-  return `I only know ${SITE.name}'s profile: roles, stack, education, and contact. Try a prompt below — live answers from his CV come next.`;
+  return `I only know ${SITE.name}'s profile: roles, skills from experience, education, and contact. Try a prompt below — live answers from his CV come next.`;
 }

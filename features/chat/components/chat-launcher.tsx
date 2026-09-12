@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { ChatTeardropDots, X } from "@phosphor-icons/react";
+import { Robot, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 type ChatLauncherProps = {
@@ -22,14 +22,14 @@ export function ChatLauncher({ open, onToggle }: ChatLauncherProps) {
             transition={{ delay: 0.9, duration: 0.35 }}
             className="pointer-events-none absolute right-16 bottom-3 hidden whitespace-nowrap rounded-full border border-border bg-elevated/90 px-3 py-1.5 text-xs text-muted-foreground shadow-lg backdrop-blur-md sm:block"
           >
-            Ask about Fabian
+            Ask the AI
           </motion.p>
         ) : null}
       </AnimatePresence>
 
       <motion.button
         type="button"
-        aria-label={open ? "Close chat" : "Ask about Fabian"}
+        aria-label={open ? "Close AI chat" : "Chat with AI assistant"}
         aria-expanded={open}
         onClick={onToggle}
         className={cn(
@@ -54,7 +54,7 @@ export function ChatLauncher({ open, onToggle }: ChatLauncherProps) {
             {open ? (
               <X size={22} weight="bold" />
             ) : (
-              <ChatTeardropDots size={24} weight="fill" />
+              <Robot size={26} weight="fill" />
             )}
           </motion.span>
         </AnimatePresence>
