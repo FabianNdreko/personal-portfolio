@@ -6,7 +6,7 @@ export function ContactSection() {
   return (
     <section id="contact" className="scroll-mt-20 md:scroll-mt-8">
       <SectionLabel
-        index="04"
+        index="03"
         title="Contact"
         description="Tell me about the role or the project — I usually reply by email."
       />

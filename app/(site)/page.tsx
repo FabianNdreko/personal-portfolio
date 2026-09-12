@@ -2,7 +2,6 @@ import { AboutSection } from "@/features/about/components/about-section";
 import { ContactSection } from "@/features/contact/components/contact-section";
 import { ExperienceSection } from "@/features/experience/components/experience-section";
 import { ProjectsSection } from "@/features/projects/components/projects-section";
-import { StackSection } from "@/features/stack/components/stack-section";
 import { getProjects } from "@/features/projects/queries";
 
 export default async function HomePage() {
@@ -14,7 +13,6 @@ export default async function HomePage() {
         <AboutSection />
         <ExperienceSection />
         <ProjectsSection projects={projects} />
-        <StackSection />
         <ContactSection />
       </div>
     </main>

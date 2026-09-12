@@ -40,10 +40,10 @@ export const NAV_SECTIONS = [
   { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
-  { id: "stack", label: "Stack" },
   { id: "contact", label: "Contact" },
 ] as const;
 
+/** Wrap skills in **like this** — ExperienceSection renders them highlighted. */
 export const EXPERIENCE = [
   {
     range: "Oct 2025 — Present",
@@ -51,9 +51,9 @@ export const EXPERIENCE = [
     company: "Tetrix",
     current: true,
     bullets: [
-      "Build and optimize responsive apps with React, Vite, TypeScript, Tailwind, and Shadcn/UI.",
-      "Manage state with Redux Toolkit; integrate REST APIs, payments, and AI-driven features.",
-      "Deploy and maintain frontend services with a focus on scale and reliability.",
+      "Built and optimized responsive web apps using **React**, **Vite**, **TypeScript**, **Tailwind CSS**, and **Shadcn/UI**, with a focus on clean UI and performance.",
+      "Implemented state management with **Redux Toolkit** and **Zustand**, and integrated **REST APIs**, payment systems, and **AI features**.",
+      "Deployed and maintained frontend services on **cloud platforms**, prioritizing scalability, reliability, and UX.",
     ],
   },
   {
@@ -62,9 +62,10 @@ export const EXPERIENCE = [
     company: "Freelance",
     current: true,
     bullets: [
-      "Full-stack apps on Next.js 15, React 19, Node.js, PostgreSQL, and Prisma.",
-      "Auth with NextAuth, forms with React Hook Form, payments via PayPal and Stripe.",
-      "Code quality enforced with ESLint, Jest, and Git, following Agile practice.",
+      "Built and deployed full-stack apps with **Next.js 15**, **React 19**, **TypeScript**, **Node.js**, **PostgreSQL**, **Prisma**, **Zod**, and **RESTful APIs**.",
+      "Integrated **NextAuth**, **React Hook Form**, **PayPal**, **Stripe**, **AWS**, and **Uploadthing**, plus responsive UI with **Tailwind CSS**, **ShadCN UI**, and **Recharts**.",
+      "Handled **VPS deployment**: installed and configured servers, containerized apps with **Docker**, and set up **Nginx** reverse proxies (SSL, routing, production hardening).",
+      "Kept quality high with **ESLint**, **Jest**, and **Git**, working in **Agile** teams.",
     ],
   },
   {
@@ -73,9 +74,9 @@ export const EXPERIENCE = [
     company: "Revelop",
     current: false,
     bullets: [
-      "Manual and automated testing with Selenium, PyTest, and unit test suites.",
-      "System, regression, and API testing conducted through Postman.",
-      "Tracked defects in Jira and worked directly with developers to resolve them.",
+      "Ran manual and automated testing with **Selenium**, **PyTest**, and unit test suites.",
+      "Covered system, regression, and **API testing** with **Postman**.",
+      "Tracked defects in **Jira** and worked with developers to resolve them quickly.",
     ],
   },
   {
@@ -84,8 +85,8 @@ export const EXPERIENCE = [
     company: "Intermedia.al",
     current: false,
     bullets: [
-      "Responsive web apps with React, Next.js, TypeScript, and Tailwind CSS.",
-      "Backend integration plus performance and SEO optimization in an Agile team.",
+      "Built responsive web apps with **React**, **Next.js**, **TypeScript**, and **Tailwind CSS**.",
+      "Integrated backend services, improved performance and **SEO**, and collaborated in an **Agile** team.",
     ],
   },
   {
@@ -94,49 +95,9 @@ export const EXPERIENCE = [
     company: "Intermedia.al",
     current: false,
     bullets: [
-      "Custom WordPress themes and plugins with WooCommerce and third-party APIs.",
-      "SEO, responsive design, troubleshooting, and UX improvements.",
+      "Built and maintained custom **WordPress** themes and plugins with **WooCommerce** and third-party APIs.",
+      "Handled **SEO**, responsive design, optimization, troubleshooting, and UX improvements.",
     ],
-  },
-] as const;
-
-export const STACK = [
-  {
-    label: "Languages",
-    items: ["JavaScript", "TypeScript", "Python", "Java", "PHP", "C++"],
-  },
-  {
-    label: "Frontend",
-    items: [
-      "React 19",
-      "Next.js 15",
-      "Vite",
-      "Tailwind CSS",
-      "ShadCN UI",
-      "Redux",
-      "React Hook Form",
-      "Recharts",
-    ],
-  },
-  {
-    label: "Backend",
-    items: ["Node.js", "PostgreSQL", "MongoDB", "Prisma", "Zod", "NextAuth"],
-  },
-  {
-    label: "Testing",
-    items: ["Jest", "Selenium", "PyTest", "Postman", "Jira"],
-  },
-  {
-    label: "Cloud",
-    items: ["AWS Cognito", "AWS Lambda", "AWS Amplify", "AWS S3"],
-  },
-  {
-    label: "Tools",
-    items: ["Git", "Figma", "Uploadthing"],
-  },
-  {
-    label: "Payments",
-    items: ["Stripe", "PayPal"],
   },
 ] as const;
 
@@ -146,6 +107,29 @@ export const EDUCATION = {
   when: "Oct 2021 — Jul 2024",
   body: "Coursework centered on software development, algorithms, database management, and system architecture — the foundation for the full-stack and QA work above.",
 } as const;
+
+/** Strip **skill** markers for plain-text contexts (chat, etc.). */
+export function plainBullet(bullet: string): string {
+  return bullet.replace(/\*\*(.+?)\*\*/g, "$1");
+}
+
+/** Unique skills pulled from experience bullet highlights. */
+export function skillsFromExperience(): string[] {
+  const skills: string[] = [];
+  const seen = new Set<string>();
+  for (const entry of EXPERIENCE) {
+    for (const bullet of entry.bullets) {
+      for (const match of bullet.matchAll(/\*\*(.+?)\*\*/g)) {
+        const skill = match[1];
+        if (!seen.has(skill)) {
+          seen.add(skill);
+          skills.push(skill);
+        }
+      }
+    }
+  }
+  return skills;
+}
 
 export const CONTACT_LINKS = [
   {
