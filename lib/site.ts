@@ -24,7 +24,7 @@ export const SITE = {
     "Tests that catch what reviewers miss",
   ],
   social: {
-    github: "https://github.com/FabianNdrekoGitHub",
+    github: "https://github.com/FabianNdreko",
     linkedin: "https://www.linkedin.com/in/fabian-ndreko-415259234",
     site: "https://fabianndrekogithub.github.io/PersonalWebPage/",
   },
@@ -152,8 +152,8 @@ export const CONTACT_LINKS = [
   },
   {
     label: "GitHub",
-    value: "FabianNdrekoGitHub",
-    href: "https://github.com/FabianNdrekoGitHub",
+    value: "FabianNdreko",
+    href: "https://github.com/FabianNdreko",
     external: true,
   },
   {
