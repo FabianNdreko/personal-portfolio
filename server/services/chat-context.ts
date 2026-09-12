@@ -42,7 +42,7 @@ export function buildProfileContext(): string {
     "",
     "Education:",
     `- ${EDUCATION.degree} — ${EDUCATION.school} (${EDUCATION.when})`,
-    EDUCATION.body,
+    plainBullet(EDUCATION.body),
     "",
     "Skills used across roles:",
     skillsFromExperience().join(", "),

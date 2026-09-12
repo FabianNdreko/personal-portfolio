@@ -53,6 +53,7 @@ export const EXPERIENCE = [
     bullets: [
       "Built and optimized responsive web apps using **React**, **Vite**, **TypeScript**, **Tailwind CSS**, and **Shadcn/UI**, with a focus on clean UI and performance.",
       "Implemented state management with **Redux Toolkit** and **Zustand**, and integrated **REST APIs**, payment systems, and **AI features**.",
+      "Designed and iterated UI in **Figma**, and used **Cursor** and **Claude** in day-to-day development.",
       "Deployed and maintained frontend services on **cloud platforms**, prioritizing scalability, reliability, and UX.",
     ],
   },
@@ -74,7 +75,7 @@ export const EXPERIENCE = [
     company: "Revelop",
     current: false,
     bullets: [
-      "Ran manual and automated testing with **Selenium**, **PyTest**, and unit test suites.",
+      "Ran manual and automated testing with **Selenium** (**Python**), **PyTest**, and unit test suites.",
       "Covered system, regression, and **API testing** with **Postman**.",
       "Tracked defects in **Jira** and worked with developers to resolve them quickly.",
     ],
@@ -105,7 +106,7 @@ export const EDUCATION = {
   degree: "BSc in Computer Science",
   school: "University of Tirana — Faculty of Natural Sciences",
   when: "Oct 2021 — Jul 2024",
-  body: "Coursework centered on software development, algorithms, database management, and system architecture — the foundation for the full-stack and QA work above.",
+  body: "Coursework centered on software development, algorithms, **JavaScript**, **Java**, **PHP**, **C++**, **SQL**, **MongoDB**, database management, and system architecture — the foundation for the full-stack and QA work above.",
 } as const;
 
 /** Strip **skill** markers for plain-text contexts (chat, etc.). */
@@ -113,21 +114,28 @@ export function plainBullet(bullet: string): string {
   return bullet.replace(/\*\*(.+?)\*\*/g, "$1");
 }
 
-/** Unique skills pulled from experience bullet highlights. */
+/** Unique skills pulled from experience and education highlights. */
 export function skillsFromExperience(): string[] {
   const skills: string[] = [];
   const seen = new Set<string>();
-  for (const entry of EXPERIENCE) {
-    for (const bullet of entry.bullets) {
-      for (const match of bullet.matchAll(/\*\*(.+?)\*\*/g)) {
-        const skill = match[1];
-        if (!seen.has(skill)) {
-          seen.add(skill);
-          skills.push(skill);
-        }
+
+  const collect = (text: string) => {
+    for (const match of text.matchAll(/\*\*(.+?)\*\*/g)) {
+      const skill = match[1];
+      if (!seen.has(skill)) {
+        seen.add(skill);
+        skills.push(skill);
       }
     }
+  };
+
+  for (const entry of EXPERIENCE) {
+    for (const bullet of entry.bullets) {
+      collect(bullet);
+    }
   }
+  collect(EDUCATION.body);
+
   return skills;
 }
 

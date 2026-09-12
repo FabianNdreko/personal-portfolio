@@ -79,7 +79,7 @@ export function ExperienceSection() {
           </h3>
           <p className="mt-0.5 text-sm text-accent">{EDUCATION.school}</p>
           <p className="mt-3 max-w-prose text-[14.5px] leading-relaxed text-muted-foreground">
-            {EDUCATION.body}
+            <HighlightedBullet text={EDUCATION.body} />
           </p>
         </div>
       </div>
