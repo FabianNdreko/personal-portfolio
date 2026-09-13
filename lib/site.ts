@@ -4,24 +4,26 @@ export const SITE = {
   repoPath: "fabian-ndreko / portfolio",
   role: "Software Developer — Frontend / Backend / QA",
   shortRole: "Frontend, Backend & QA",
+  roleDetail:
+    "React/Next UI, real APIs and SQL, and the QA habit of catching edge cases before users do.",
   location: "Tirana, Albania",
   locationShort: "Tirana, AL · UTC+2",
   available: true,
-  availableLabel: "Available for work",
+  availableLabel: "Open to work",
+  availabilityDetail:
+    "Contract or full-time · remote, hybrid, or on-site from Tirana.",
+  lookingFor:
+    "A product team that wants one owner for UI, API, and the quality bar.",
   statusStack: "TypeScript · Next.js 15 · React 19",
-  headline: "I build software, then I break it on purpose.",
+  headline: "A frontend Dev who also knows how to join tables",
   subline:
-    "Frontend interfaces, backend systems, and the QA discipline to keep both honest.",
+    "Interfaces people use — plus the APIs, data, and checks that keep them honest.",
   intro:
-    "Currently shipping production frontend at Tetrix and full-stack freelance work with Next.js, React, and Node — with a QA background that means I write tests before someone else finds the bug.",
+    "Production UI by day, full-stack SaaS on the side. QA taught me to ship like someone will try to break it.",
+  aboutTitle: "How I build",
   about: [
-    "I started on the frontend, moved into QA to see how software actually breaks in the hands of real users, and now build full-stack — carrying that testing instinct into every feature I ship.",
-    "Outside of client and freelance work, I'm usually deep in a side project, trying out a new part of the stack, or reading through documentation I probably should have read sooner.",
-  ],
-  focus: [
-    "Full-stack apps",
-    "Clean APIs",
-    "Tests that catch what reviewers miss",
+    "I began in frontend with React and TypeScript, then worked in QA building Selenium suites, API checks, and regression coverage. That experience shaped how I ship: I design for contracts, fixtures, and failure modes — not only for what looks correct on screen.",
+    "I now work full-stack end to end: typed APIs, Prisma on PostgreSQL, authentication, Dockerized services behind Nginx on a VPS, and React/Next interfaces connected to real backends. Side projects are where I validate new parts of that stack under production-like constraints.",
   ],
   social: {
     github: "https://github.com/FabianNdreko",
@@ -39,6 +41,7 @@ export const SITE = {
 export const NAV_SECTIONS = [
   { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
+  { id: "education", label: "Education" },
   { id: "projects", label: "Projects" },
   { id: "contact", label: "Contact" },
 ] as const;
@@ -51,10 +54,9 @@ export const EXPERIENCE = [
     company: "Tetrix",
     current: true,
     bullets: [
-      "Built and optimized responsive web apps using **React**, **Vite**, **TypeScript**, **Tailwind CSS**, and **Shadcn/UI**, with a focus on clean UI and performance.",
-      "Implemented state management with **Redux Toolkit** and **Zustand**, and integrated **REST APIs**, payment systems, and **AI features**.",
-      "Designed and iterated UI in **Figma**, and used **Cursor** and **Claude** in day-to-day development.",
-      "Deployed and maintained frontend services on **cloud platforms**, prioritizing scalability, reliability, and UX.",
+      "Ship production screens in **React**, **Vite**, **TypeScript**, **Tailwind CSS**, and **Shadcn/UI** — Figma to deploy.",
+      "Own client state with **Redux Toolkit** / **Zustand**; wire UI to **REST APIs**, payments, and **AI features**.",
+      "Keep releases boring: cloud deploys, regression passes, and UX fixes when production talks back.",
     ],
   },
   {
@@ -63,10 +65,9 @@ export const EXPERIENCE = [
     company: "Freelance",
     current: true,
     bullets: [
-      "Built and deployed full-stack apps with **Next.js 15**, **React 19**, **TypeScript**, **Node.js**, **PostgreSQL**, **Prisma**, **Zod**, and **RESTful APIs**.",
-      "Integrated **NextAuth**, **React Hook Form**, **PayPal**, **Stripe**, **AWS**, and **Uploadthing**, plus responsive UI with **Tailwind CSS**, **ShadCN UI**, and **Recharts**.",
-      "Handled **VPS deployment**: installed and configured servers, containerized apps with **Docker**, and set up **Nginx** reverse proxies (SSL, routing, production hardening).",
-      "Kept quality high with **ESLint**, **Jest**, and **Git**, working in **Agile** teams.",
+      "Deliver client products with **Next.js 15**, **React 19**, **TypeScript**, **Node.js**, **PostgreSQL**, **Prisma**, and **REST APIs**.",
+      "Auth (**NextAuth**), forms, payments (**PayPal** / **Stripe**), and charts when the product needs them.",
+      "Production on **VPS**: **Docker**, **Nginx**, SSL — plus **ESLint** / **Jest** in **Agile** delivery.",
     ],
   },
   {
@@ -75,29 +76,18 @@ export const EXPERIENCE = [
     company: "Revelop",
     current: false,
     bullets: [
-      "Ran manual and automated testing with **Selenium** (**Python**), **PyTest**, and unit test suites.",
-      "Covered system, regression, and **API testing** with **Postman**.",
-      "Tracked defects in **Jira** and worked with developers to resolve them quickly.",
+      "Automated coverage with **Selenium** (**Python**), **PyTest**, and unit tests — caught breaks before users did.",
+      "System, regression, and **API testing** in **Postman**; defects tracked in **Jira** with enough detail to fix once.",
     ],
   },
   {
-    range: "Sep 2022 — Jan 2023",
+    range: "Jun 2022 — Jan 2023",
     role: "Frontend Developer",
     company: "Intermedia.al",
     current: false,
     bullets: [
-      "Built responsive web apps with **React**, **Next.js**, **TypeScript**, and **Tailwind CSS**.",
-      "Integrated backend services, improved performance and **SEO**, and collaborated in an **Agile** team.",
-    ],
-  },
-  {
-    range: "Jun 2022 — Aug 2022",
-    role: "WordPress Developer",
-    company: "Intermedia.al",
-    current: false,
-    bullets: [
-      "Built and maintained custom **WordPress** themes and plugins with **WooCommerce** and third-party APIs.",
-      "Handled **SEO**, responsive design, optimization, troubleshooting, and UX improvements.",
+      "Shipped responsive apps in **React**, **Next.js**, **TypeScript**, and **Tailwind CSS**; hooked UI to backends and tightened **SEO** and performance in an **Agile** team.",
+      "Earlier there: custom **WordPress** themes and plugins with **WooCommerce** and third-party APIs — layouts, performance, and conversion-blocking UX fixes.",
     ],
   },
 ] as const;
@@ -106,7 +96,7 @@ export const EDUCATION = {
   degree: "BSc in Computer Science",
   school: "University of Tirana — Faculty of Natural Sciences",
   when: "Oct 2021 — Jul 2024",
-  body: "Coursework centered on software development, algorithms, **JavaScript**, **Java**, **PHP**, **C++**, **SQL**, **MongoDB**, database management, and system architecture — the foundation for the full-stack and QA work above.",
+  body: "Algorithms, software design, and systems — with coursework in **JavaScript**, **Java**, **PHP**, **C++**, **SQL**, and **MongoDB** that still shows up in how I model data.",
 } as const;
 
 /** Strip **skill** markers for plain-text contexts (chat, etc.). */

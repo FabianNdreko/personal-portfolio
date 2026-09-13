@@ -2,16 +2,16 @@ import { EDUCATION, EXPERIENCE, SITE } from "@/lib/site";
 import type { ChatMessage } from "../types";
 
 export const CHAT_SUGGESTIONS = [
-  "Is he available?",
-  "What tech does he use?",
-  "Where has he worked?",
+  "Is Barber SaaS live?",
+  "Can he ship a Nest API?",
+  "Is he open to hire?",
   "How do I reach him?",
 ] as const;
 
 export const WELCOME_MESSAGE: ChatMessage = {
   id: "welcome",
   role: "assistant",
-  text: `Hi — I can walk you through ${SITE.name}'s work, the tech he uses on the job, and how to get in touch. What do you want to know?`,
+  text: `Hi — ask anything quick about ${SITE.name}'s work, stack, or how to hire him. I’ll keep it short.`,
 };
 
 export function cannedReply(question: string): string {
@@ -24,8 +24,27 @@ export function cannedReply(question: string): string {
     q.includes("looking")
   ) {
     return SITE.available
-      ? `${SITE.name} is ${SITE.availableLabel.toLowerCase()}, based in ${SITE.location}. Frontend, backend, or QA — locally or remote.`
+      ? `${SITE.name} is ${SITE.availableLabel.toLowerCase()} — ${SITE.lookingFor} Based in ${SITE.location}; open to remote, hybrid, or on-site.`
       : `${SITE.name} is not taking new work right now. You can still reach him through the contact form.`;
+  }
+
+  if (
+    q.includes("barber") ||
+    q.includes("barbr") ||
+    q.includes("saas") ||
+    (q.includes("live") && (q.includes("product") || q.includes("app") || q.includes("demo")))
+  ) {
+    return `Yes — Barber SaaS is live at https://app.barbr.space/ with 7 active salon clients. Schedule rules block bookings on unavailable hours. Demo login is on the Projects section.`;
+  }
+
+  if (
+    q.includes("nest") ||
+    q.includes("api") ||
+    q.includes("backend") ||
+    q.includes("prisma") ||
+    q.includes("postgres")
+  ) {
+    return `Yes. He ships NestJS/Node APIs with Prisma and PostgreSQL, plus auth, Docker, and Nginx on a VPS — see Barber SaaS and his freelance roles.`;
   }
 
   if (
@@ -74,15 +93,14 @@ export function cannedReply(question: string): string {
     q.includes("linkedin") ||
     q.includes("github")
   ) {
-    return `Email ${SITE.contact.email} or use the form on this page. LinkedIn and GitHub are in the sidebar too.`;
+    return `Email ${SITE.contact.email} or use the contact form on this page. LinkedIn and GitHub are linked in the header/footer.`;
   }
 
   if (
     q.includes("where") ||
     q.includes("location") ||
     q.includes("tirana") ||
-    q.includes("based") ||
-    q.includes("live")
+    q.includes("based")
   ) {
     return `${SITE.name} is based in ${SITE.location}.`;
   }
@@ -101,5 +119,5 @@ export function cannedReply(question: string): string {
     return `${SITE.name} — ${SITE.role}. ${SITE.intro}`;
   }
 
-  return `I only know ${SITE.name}'s profile: roles, skills from experience, education, and contact. Try a prompt below — live answers from his CV come next.`;
+  return `I can cover ${SITE.name}'s roles, skills, Barber SaaS, education, and contact. Try one of the prompts below.`;
 }

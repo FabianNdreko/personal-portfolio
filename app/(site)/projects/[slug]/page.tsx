@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectDetail } from "@/features/projects/components/project-detail";
-import { getProjectBySlug, getProjectPage, getProjects } from "@/features/projects/queries";
+import {
+  getCaseStudies,
+  getProjectBySlug,
+  getProjectPage,
+} from "@/features/projects/queries";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
-  const projects = await getProjects();
+  const projects = await getCaseStudies();
   return projects.map((project) => ({ slug: project.slug }));
 }
 
@@ -37,7 +41,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <main className="mx-auto w-full max-w-190 min-w-0 px-4 pt-8 pb-8 sm:px-5 md:px-10 md:pt-16">
+    <main className="mx-auto w-full max-w-5xl min-w-0 px-4 pt-8 pb-8 sm:px-6 md:px-8 md:pt-12 md:pb-12">
       <ProjectDetail
         project={page.project}
         previous={page.previous}

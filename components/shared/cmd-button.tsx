@@ -3,14 +3,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cmdButtonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-md border px-4.5 py-2.5 text-sm font-medium transition-colors",
+  "inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-all duration-300",
   {
     variants: {
       variant: {
         primary:
-          "border-accent bg-accent text-primary-foreground hover:border-accent-dim hover:bg-accent-dim",
+          "border-accent/60 bg-accent text-primary-foreground shadow-[0_0_24px_rgba(232,184,74,0.25)] hover:border-accent-dim hover:bg-accent-dim hover:shadow-[0_0_32px_rgba(232,184,74,0.35)]",
         outline:
-          "border-border-strong bg-transparent text-foreground hover:border-accent hover:text-accent",
+          "border-border-strong bg-transparent text-foreground hover:border-accent/50 hover:text-accent hover:shadow-[0_0_24px_rgba(232,184,74,0.12)]",
       },
     },
     defaultVariants: {

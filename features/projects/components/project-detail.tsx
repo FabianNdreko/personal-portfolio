@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import { CmdButton, Tag } from "@/components/shared";
 import type { Project } from "../types";
 import { projectPath } from "../types";
@@ -10,26 +11,69 @@ type ProjectDetailProps = {
   next: Project | null;
 };
 
+function LinkedCopy({ text, href }: { text: string; href?: string }) {
+  if (!href) return <>{text}</>;
+
+  let host: string;
+  try {
+    host = new URL(href).host;
+  } catch {
+    return <>{text}</>;
+  }
+
+  if (!text.includes(host)) return <>{text}</>;
+
+  const parts = text.split(host);
+  return (
+    <>
+      {parts.map((part, index) => (
+        <Fragment key={`${host}-${index}`}>
+          {part}
+          {index < parts.length - 1 ? (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-accent underline-offset-4 hover:underline"
+            >
+              {host}
+            </a>
+          ) : null}
+        </Fragment>
+      ))}
+    </>
+  );
+}
+
 export function ProjectDetail({ project, previous, next }: ProjectDetailProps) {
   return (
     <article>
       <Link
         href="/#projects"
-        className="text-sm text-muted-foreground hover:text-accent"
+        className="inline-flex min-h-10 items-center text-sm text-muted-foreground hover:text-accent"
       >
         ← Projects
       </Link>
 
       <header className="mt-6">
-        <p className="text-sm text-accent">
-          {project.year} · {project.role}
-        </p>
-        <h1 className="font-display mt-2 text-[clamp(28px,4.5vw,42px)] font-bold tracking-tight">
+        <h1 className="font-display text-[clamp(28px,4.5vw,42px)] font-bold tracking-tight">
           {project.title}
         </h1>
         <p className="mt-3 max-w-prose text-[16px] leading-relaxed text-muted-foreground">
           {project.summary}
         </p>
+        {project.metrics?.length ? (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {project.metrics.map((metric) => (
+              <span
+                key={metric}
+                className="rounded-full border border-accent/25 bg-accent/8 px-3 py-1.5 text-[12.5px] font-medium text-foreground/90"
+              >
+                {metric}
+              </span>
+            ))}
+          </div>
+        ) : null}
         <ul className="mt-5 flex flex-wrap gap-1.5">
           {project.tags.map((tag) => (
             <li key={tag}>
@@ -41,7 +85,7 @@ export function ProjectDetail({ project, previous, next }: ProjectDetailProps) {
           <div className="mt-6 flex flex-wrap gap-3">
             {project.liveUrl ? (
               <CmdButton href={project.liveUrl} variant="primary" external>
-                View live
+                Try live demo
               </CmdButton>
             ) : null}
             {project.codeUrl ? (
@@ -52,7 +96,7 @@ export function ProjectDetail({ project, previous, next }: ProjectDetailProps) {
           </div>
         ) : null}
         {project.demoLogin ? (
-          <div className="mt-5 max-w-md rounded-xl border border-border bg-elevated px-4 py-3.5">
+          <div className="mt-5 max-w-md rounded-2xl border border-accent/20 bg-elevated px-4 py-3.5 shadow-[0_0_32px_rgba(232,184,74,0.08)]">
             <p className="text-xs font-medium tracking-wide text-accent uppercase">
               Demo login
             </p>
@@ -87,37 +131,39 @@ export function ProjectDetail({ project, previous, next }: ProjectDetailProps) {
         <h2 className="font-display text-xl font-semibold tracking-tight">
           Overview
         </h2>
-        {project.overview.map((paragraph) => (
+        {(project.overview ?? []).map((paragraph) => (
           <p
             key={paragraph.slice(0, 32)}
             className="mt-3 max-w-prose text-[15px] leading-relaxed text-muted-foreground"
           >
-            {paragraph}
+            <LinkedCopy text={paragraph} href={project.liveUrl} />
           </p>
         ))}
       </section>
 
-      {project.highlights.length > 0 ? (
+      {(project.highlights?.length ?? 0) > 0 ? (
         <section className="mt-12 grid gap-3 border-t border-border pt-10 sm:grid-cols-[11.5rem_1fr] sm:gap-8">
-          <h2 className="text-sm font-medium">What I did</h2>
+          <h2 className="text-sm font-medium">Highlights</h2>
           <ul className="max-w-prose list-disc space-y-1.5 pl-4.5 text-[14.5px] leading-relaxed text-muted-foreground">
-            {project.highlights.map((item) => (
-              <li key={item}>{item}</li>
+            {project.highlights!.map((item) => (
+              <li key={item}>
+                <LinkedCopy text={item} href={project.liveUrl} />
+              </li>
             ))}
           </ul>
         </section>
       ) : null}
 
-      {project.sections.length > 0 ? (
+      {(project.sections?.length ?? 0) > 0 ? (
         <div className="mt-4">
-          {project.sections.map((section) => (
+          {project.sections!.map((section) => (
             <section
               key={section.title}
               className="grid gap-2 border-t border-border py-8 last:pb-0 sm:grid-cols-[11.5rem_1fr] sm:gap-8"
             >
               <h2 className="text-sm font-medium">{section.title}</h2>
               <p className="max-w-prose text-[14.5px] leading-relaxed text-muted-foreground">
-                {section.body}
+                <LinkedCopy text={section.body} href={project.liveUrl} />
               </p>
             </section>
           ))}
