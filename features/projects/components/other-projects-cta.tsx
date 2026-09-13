@@ -6,14 +6,14 @@ import { SITE } from "@/lib/site";
 
 export function OtherProjectsCta() {
   return (
-    <aside className="relative overflow-hidden rounded-xl border-2 border-accent/40 bg-elevated px-5 py-6 sm:px-6 sm:py-7">
+    <aside className="glow-panel relative overflow-hidden rounded-2xl border border-accent/30 bg-elevated/80 px-5 py-6 sm:px-6 sm:py-7">
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-8 -top-8 size-36 rounded-full bg-accent/10 blur-2xl"
+        className="pointer-events-none absolute -right-8 -top-8 size-40 rounded-full bg-accent/15 blur-3xl"
       />
       <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div className="flex min-w-0 items-start gap-4">
-          <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border border-border-strong bg-background text-foreground shadow-sm">
+          <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl border border-border-strong bg-background text-foreground shadow-[0_0_24px_rgba(232,184,74,0.1)]">
             <GithubLogo weight="fill" className="size-8" aria-hidden />
           </span>
           <div className="min-w-0 pt-0.5">
@@ -21,8 +21,7 @@ export function OtherProjectsCta() {
               Other projects
             </p>
             <p className="mt-1.5 max-w-prose text-[14px] leading-relaxed text-muted-foreground">
-              Some work stays private while in development. Browse my public
-              repositories on GitHub.
+              Older experiments and other repos.
             </p>
           </div>
         </div>

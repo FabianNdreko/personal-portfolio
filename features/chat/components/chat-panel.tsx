@@ -44,9 +44,9 @@ export function ChatPanel({
           animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
           exit={{ opacity: 0, y: 18, scale: 0.96, filter: "blur(6px)" }}
           transition={{ type: "spring", damping: 24, stiffness: 280 }}
-          className="chat-scroll fixed right-3 bottom-32 z-50 w-[min(100%-1.5rem,24rem)] sm:right-5 md:bottom-34"
+          className="chat-scroll fixed right-3 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-50 w-[min(100%-1.5rem,24rem)] sm:right-5 sm:bottom-[calc(6.5rem+env(safe-area-inset-bottom))]"
         >
-          <div className="overflow-hidden rounded-2xl bg-linear-to-br from-accent/50 via-border to-accent/15 p-px shadow-[0_24px_80px_rgba(0,0,0,0.55),0_0_40px_rgba(31,224,184,0.12)]">
+          <div className="overflow-hidden rounded-2xl bg-linear-to-br from-accent/50 via-border to-accent/15 p-px shadow-[0_24px_80px_rgba(0,0,0,0.55),0_0_40px_rgba(232,184,74,0.14)]">
             <div className="chat-scroll flex h-[min(32rem,70vh)] flex-col overflow-hidden rounded-[15px] bg-background/90 backdrop-blur-xl">
               <header className="relative border-b border-border px-4 py-3.5">
                 <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-accent to-transparent" />
@@ -73,7 +73,7 @@ export function ChatPanel({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="text-xs text-fg-dim hover:text-foreground sm:hidden"
+                    className="inline-flex min-h-10 items-center px-2 text-xs text-fg-dim hover:text-foreground sm:hidden"
                   >
                     Close
                   </button>
@@ -82,7 +82,7 @@ export function ChatPanel({
 
               <div
                 ref={listRef}
-                className="chat-scroll flex-1 space-y-3 overflow-y-auto px-4 py-4"
+                className="chat-scroll min-h-40 flex-1 space-y-3 overflow-y-auto px-4 py-4"
               >
                 {messages.map((message, index) => (
                   <motion.div
@@ -97,10 +97,10 @@ export function ChatPanel({
                   >
                     <div
                       className={cn(
-                        "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[13.5px] leading-relaxed whitespace-pre-wrap",
+                        "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[13.5px] leading-relaxed break-words whitespace-pre-wrap",
                         message.role === "user"
                           ? "rounded-br-md bg-accent text-primary-foreground"
-                          : "rounded-bl-md border border-border bg-elevated text-foreground",
+                          : "rounded-bl-md border border-border bg-[#121212] text-foreground",
                       )}
                     >
                       {message.text}
@@ -125,7 +125,7 @@ export function ChatPanel({
                         key={suggestion}
                         type="button"
                         onClick={() => onSend(suggestion)}
-                        className="rounded-full border border-border bg-elevated px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent"
+                        className="min-h-10 rounded-full border border-border bg-elevated px-3 py-2.5 text-xs text-muted-foreground transition-colors hover:border-accent/50 hover:text-accent"
                       >
                         {suggestion}
                       </button>
@@ -159,7 +159,7 @@ export function ChatPanel({
                     type="submit"
                     disabled={thinking || input.trim().length === 0}
                     aria-label="Send"
-                    className="mb-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent text-primary-foreground transition-opacity disabled:opacity-35"
+                    className="mb-0.5 flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-primary-foreground transition-opacity disabled:opacity-35"
                   >
                     <PaperPlaneTilt size={15} weight="fill" />
                   </button>

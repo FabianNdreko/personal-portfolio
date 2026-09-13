@@ -32,9 +32,15 @@ function validate(name: string, email: string, message: string): FieldErrors {
   return errors;
 }
 
-function mailtoHref(name: string, email: string, message: string) {
+function mailtoHref(
+  name: string,
+  email: string,
+  message: string,
+  phone: string,
+) {
   const subject = `Portfolio message from ${name}`;
-  const body = `${message}\n\n— ${name}\n${email}`;
+  const phoneLine = phone.trim() ? `\nPhone: ${phone.trim()}` : "";
+  const body = `${message}\n\n— ${name}\n${email}${phoneLine}`;
   return `mailto:${SITE.contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
@@ -48,6 +54,7 @@ export function ContactForm() {
     const data = new FormData(form);
     const name = String(data.get("name") ?? "");
     const email = String(data.get("email") ?? "");
+    const phone = String(data.get("phone") ?? "");
     const message = String(data.get("message") ?? "");
     const honeypot = String(data.get("company") ?? "");
 
@@ -80,6 +87,7 @@ export function ContactForm() {
           access_key: WEB3FORMS_ACCESS_KEY,
           name: name.trim(),
           email: email.trim(),
+          phone: phone.trim() || undefined,
           message: message.trim(),
           subject: `Portfolio message from ${name.trim()}`,
         }),
@@ -94,23 +102,28 @@ export function ContactForm() {
       form.reset();
       setStatus("success");
     } catch {
-      window.location.href = mailtoHref(name.trim(), email.trim(), message.trim());
+      window.location.href = mailtoHref(
+        name.trim(),
+        email.trim(),
+        message.trim(),
+        phone,
+      );
       setStatus("mailto");
     }
   }
 
   if (status === "success" || status === "mailto" || status === "error") {
     return (
-      <div className="border-t border-border pt-8">
-        <p className="text-lg font-semibold tracking-tight">
-          {status === "error" ? "Form isn’t configured yet." : "Message ready."}
+      <div className="px-1 py-2">
+        <p className="font-display text-xl font-semibold tracking-tight text-foreground">
+          {status === "error" ? "Form isn’t configured yet." : "Message sent."}
         </p>
-        <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-muted-foreground">
+        <p className="mt-2 text-[14.5px] leading-relaxed text-muted-foreground">
           {status === "error"
             ? "Add your Web3Forms access key to WEB3FORMS_ACCESS_KEY in .env, then restart the dev server."
             : status === "mailto"
-              ? "Your email app should open with the message filled in. Send it from there, or write me directly."
-              : "Thanks — I’ll get back to you by email."}
+              ? "Your email app should open with the message filled in."
+              : "Thanks — I’ll reply by email as soon as I can."}
         </p>
         <button
           type="button"
@@ -118,7 +131,7 @@ export function ContactForm() {
             setStatus("idle");
             setErrors({});
           }}
-          className="mt-6 text-sm text-accent hover:underline"
+          className="mt-6 text-sm font-medium text-accent underline-offset-4 hover:underline"
         >
           {status === "error" ? "Try again" : "Send another"}
         </button>
@@ -127,50 +140,66 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate>
+    <form onSubmit={onSubmit} noValidate className="relative">
       <div className="sr-only" aria-hidden>
         <label htmlFor="contact-company">Company</label>
-        <input id="contact-company" name="company" tabIndex={-1} autoComplete="off" />
+        <input
+          id="contact-company"
+          name="company"
+          tabIndex={-1}
+          autoComplete="off"
+        />
       </div>
+
+      <p className="mb-8 text-[11px] font-medium tracking-[0.2em] text-fg-dim uppercase">
+        Inquiry form
+      </p>
 
       <Field
         id="contact-name"
         name="name"
         label="Name"
         autoComplete="name"
-        placeholder="Your name"
         error={errors.name}
       />
       <Field
         id="contact-email"
         name="email"
-        label="Email"
+        label="E-mail"
         type="email"
         autoComplete="email"
-        placeholder="you@example.com"
         error={errors.email}
+      />
+      <Field
+        id="contact-phone"
+        name="phone"
+        label="Phone"
+        type="tel"
+        autoComplete="tel"
       />
       <Field
         id="contact-message"
         name="message"
         label="Message"
-        placeholder="What are you working on, and how can I help?"
         error={errors.message}
         multiline
       />
 
-      <div className="flex flex-col gap-3 pt-6 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-fg-dim">Goes to {SITE.contact.email}</p>
+      <div className="relative mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-[12.5px] text-muted-foreground">
+          Usually replies within 24 hours.
+        </p>
         <button
           type="submit"
           disabled={status === "submitting"}
           className={cn(
-            "inline-flex items-center justify-center rounded-md border border-accent bg-accent px-4.5 py-2.5 text-sm font-medium text-primary-foreground transition-colors",
+            "inline-flex w-full items-center justify-center rounded-full border border-accent/60 bg-accent px-6 py-3 text-sm font-medium tracking-wide text-primary-foreground sm:w-auto",
+            "shadow-[0_0_28px_rgba(232,184,74,0.22)] transition-all duration-300",
             "hover:border-accent-dim hover:bg-accent-dim",
             "disabled:pointer-events-none disabled:opacity-60",
           )}
         >
-          {status === "submitting" ? "Sending…" : "Send message"}
+          {status === "submitting" ? "Sending…" : "Send message —"}
         </button>
       </div>
     </form>
@@ -181,7 +210,6 @@ type FieldProps = {
   id: string;
   name: string;
   label: string;
-  placeholder: string;
   error?: string;
   type?: string;
   autoComplete?: string;
@@ -192,51 +220,50 @@ function Field({
   id,
   name,
   label,
-  placeholder,
   error,
   type = "text",
   autoComplete,
   multiline = false,
 }: FieldProps) {
   const controlClass = cn(
-    "w-full bg-transparent py-1 text-[15px] text-foreground outline-none placeholder:text-fg-dim",
-    error && "text-destructive",
+    "w-full border-0 border-b border-border-strong bg-transparent py-2 text-[15px] text-foreground outline-none transition-colors",
+    "placeholder:text-fg-dim focus:border-accent",
+    error && "border-destructive text-destructive",
   );
 
   return (
-    <div className="grid gap-2 border-b border-border py-5 sm:grid-cols-[11.5rem_1fr] sm:items-start sm:gap-8">
-      <label htmlFor={id} className="pt-1 text-sm text-muted-foreground">
+    <div className="mb-5">
+      <label
+        htmlFor={id}
+        className="mb-1 block text-[13px] tracking-wide text-muted-foreground"
+      >
         {label}
       </label>
-      <div>
-        {multiline ? (
-          <textarea
-            id={id}
-            name={name}
-            rows={5}
-            placeholder={placeholder}
-            aria-invalid={Boolean(error)}
-            aria-describedby={error ? `${id}-error` : undefined}
-            className={cn(controlClass, "min-h-32 resize-y")}
-          />
-        ) : (
-          <input
-            id={id}
-            name={name}
-            type={type}
-            autoComplete={autoComplete}
-            placeholder={placeholder}
-            aria-invalid={Boolean(error)}
-            aria-describedby={error ? `${id}-error` : undefined}
-            className={controlClass}
-          />
-        )}
-        {error ? (
-          <p id={`${id}-error`} className="mt-2 text-sm text-destructive">
-            {error}
-          </p>
-        ) : null}
-      </div>
+      {multiline ? (
+        <textarea
+          id={id}
+          name={name}
+          rows={3}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${id}-error` : undefined}
+          className={cn(controlClass, "min-h-24 resize-y")}
+        />
+      ) : (
+        <input
+          id={id}
+          name={name}
+          type={type}
+          autoComplete={autoComplete}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${id}-error` : undefined}
+          className={controlClass}
+        />
+      )}
+      {error ? (
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

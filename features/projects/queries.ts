@@ -1,11 +1,16 @@
 import {
   getProjectBySlug as getProjectBySlugService,
+  listCaseStudies,
   listProjects,
 } from "@/server/services/projects";
 import type { Project } from "./types";
 
 export async function getProjects(): Promise<Project[]> {
   return listProjects();
+}
+
+export async function getCaseStudies(): Promise<Project[]> {
+  return listCaseStudies();
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
@@ -17,16 +22,16 @@ export async function getProjectPage(slug: string): Promise<{
   previous: Project | null;
   next: Project | null;
 } | null> {
-  const projects = await listProjects();
-  const index = projects.findIndex((project) => project.slug === slug);
+  const caseStudies = await listCaseStudies();
+  const index = caseStudies.findIndex((project) => project.slug === slug);
 
   if (index === -1) {
     return null;
   }
 
   return {
-    project: projects[index],
-    previous: projects[index - 1] ?? null,
-    next: projects[index + 1] ?? null,
+    project: caseStudies[index],
+    previous: caseStudies[index - 1] ?? null,
+    next: caseStudies[index + 1] ?? null,
   };
 }

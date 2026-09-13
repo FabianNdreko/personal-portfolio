@@ -17,10 +17,13 @@ export function buildProfileContext(): string {
   }).join("\n");
 
   const projectLines = projects
-    .map(
-      (project) =>
-        `- ${project.title} (${project.year}, ${project.role}): ${project.summary}`,
-    )
+    .map((project) => {
+      const proof = project.metrics?.length
+        ? ` Proof: ${project.metrics.join("; ")}.`
+        : "";
+      const url = project.liveUrl ? ` Live: ${project.liveUrl}` : "";
+      return `- ${project.title} (${project.year}, ${project.role}): ${project.summary}.${proof}${url}`;
+    })
     .join("\n");
 
   return [
@@ -28,10 +31,10 @@ export function buildProfileContext(): string {
     `Role: ${SITE.role}`,
     `Location: ${SITE.location}`,
     `Availability: ${SITE.available ? SITE.availableLabel : "Not available"}`,
+    `Looking for: ${SITE.lookingFor}`,
     `Headline: ${SITE.headline}`,
     `Intro: ${SITE.intro}`,
     `About: ${SITE.about.join(" ")}`,
-    `Focus: ${SITE.focus.join("; ")}`,
     `Email: ${SITE.contact.email}`,
     `Phone: ${SITE.contact.phone}`,
     `GitHub: ${SITE.social.github}`,

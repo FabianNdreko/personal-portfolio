@@ -1,4 +1,5 @@
 import { rateLimit } from "@/server/lib/rate-limit";
+import { cannedReply } from "@/features/chat/data/canned";
 import { answerFromProfile, ChatConfigError } from "@/server/services/chat";
 import { chatRequestSchema } from "@/server/validators/chat";
 
@@ -9,6 +10,13 @@ function clientKey(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
   const ip = forwarded?.split(",")[0]?.trim();
   return ip || request.headers.get("x-real-ip") || "local";
+}
+
+function lastUserText(messages: { role: string; text: string }[]) {
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    if (messages[i]?.role === "user") return messages[i].text;
+  }
+  return "";
 }
 
 export async function POST(request: Request) {
@@ -42,21 +50,17 @@ export async function POST(request: Request) {
     return Response.json({ error: "Ask a question to continue." }, { status: 400 });
   }
 
+  const question = lastUserText(parsed.data.messages);
+
   try {
     const reply = await answerFromProfile(parsed.data);
     return Response.json({ reply });
   } catch (error) {
     if (error instanceof ChatConfigError) {
-      return Response.json(
-        { error: "The assistant is not configured yet." },
-        { status: 503 },
-      );
+      return Response.json({ reply: cannedReply(question) });
     }
 
     console.error("chat", error);
-    return Response.json(
-      { error: "Could not answer just now. Try again." },
-      { status: 502 },
-    );
+    return Response.json({ reply: cannedReply(question) });
   }
 }

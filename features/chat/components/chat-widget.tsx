@@ -17,7 +17,12 @@ export function ChatWidget() {
 
   useEffect(() => {
     const node = listRef.current;
-    if (!node) return;
+    if (!node || !open) return;
+    // Keep the welcome message in view; only follow new replies.
+    if (messages.length <= 1) {
+      node.scrollTo({ top: 0 });
+      return;
+    }
     node.scrollTo({ top: node.scrollHeight, behavior: "smooth" });
   }, [messages, thinking, open]);
 

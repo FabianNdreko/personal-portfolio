@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" role="img" aria-label="Barber SaaS">
+  <!-- Scissor handles -->
+  <circle cx="34" cy="28" r="11" stroke="#111111" stroke-width="7" fill="none"/>
+  <circle cx="52" cy="22" r="11" stroke="#111111" stroke-width="7" fill="none"/>
+  <!-- Pivot -->
+  <circle cx="48" cy="48" r="4.5" fill="#111111"/>
+  <circle cx="48" cy="48" r="1.8" fill="#f4f1ea"/>
+  <!-- Blades forming B stem -->
+  <path d="M44 52 L52 108" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+  <path d="M52 52 L42 108" stroke="#111111" stroke-width="5.5" stroke-linecap="round"/>
+  <!-- Serif B bowls -->
+  <path
+    d="M52 28
+       C78 28 94 38 94 52
+       C94 64 82 70 64 72
+       C84 74 98 82 98 96
+       C98 112 78 118 52 118
+       L52 104
+       C70 104 82 100 82 94
+       C82 86 70 82 52 82
+       Z
+       M52 40
+       L52 60
+       C66 60 78 56 78 50
+       C78 44 66 40 52 40
+       Z"
+    fill="#111111"
+  />
+  <!-- Bottom serif foot -->
+  <path d="M40 112 H62" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+</svg>

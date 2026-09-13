@@ -1,5 +1,7 @@
 import type { Project } from "../types";
 import { barberSaas } from "./barber-saas";
+import { gartenbauGorreja } from "./gartenbau-gorreja";
+import { pacManGame } from "./pac-man";
 
 /**
  * How to add a project
@@ -8,4 +10,4 @@ import { barberSaas } from "./barber-saas";
  * 3. Optional cover: `public/images/projects/<slug>/cover.jpg`.
  * The route `/projects/<slug>` is generated from the slug — no new page file.
  */
-export const projects: Project[] = [barberSaas];
+export const projects: Project[] = [barberSaas, gartenbauGorreja, pacManGame];
