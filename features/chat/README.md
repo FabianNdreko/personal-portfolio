@@ -7,6 +7,7 @@ Global assistant popup (not a `/chat` route). Mounted once in `SiteShell`.
 - Backend: `server/validators/chat.ts`, `server/services/chat.ts`, `server/services/chat-context.ts`
 - Bot protection: Cloudflare Turnstile (`server/services/turnstile.ts`, `features/chat/hooks/use-turnstile.ts`)
 - Rate limits: Upstash Redis when configured (`server/lib/rate-limit.ts`) — 10 / 10 min and 20 / day per IP
+- Safety checklist: `SECURITY-TODO.md` (done / remaining)
 
 ## Environment
 
