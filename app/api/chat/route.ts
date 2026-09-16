@@ -1,4 +1,4 @@
-import { rateLimit } from "@/server/lib/rate-limit";
+import { rateLimitChat } from "@/server/lib/rate-limit";
 import { cannedReply } from "@/features/chat/data/canned";
 import { answerFromProfile, ChatConfigError } from "@/server/services/chat";
 import {
@@ -7,9 +7,6 @@ import {
   verifyTurnstileToken,
 } from "@/server/services/turnstile";
 import { chatRequestSchema } from "@/server/validators/chat";
-
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_REQUESTS = 10;
 
 function clientKey(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -26,7 +23,7 @@ function lastUserText(messages: { role: string; text: string }[]) {
 
 export async function POST(request: Request) {
   const ip = clientKey(request);
-  const limited = rateLimit(`chat:${ip}`, MAX_REQUESTS, WINDOW_MS);
+  const limited = await rateLimitChat(ip);
   if (!limited.ok) {
     return Response.json(
       { error: "Too many questions. Try again in a few minutes." },
