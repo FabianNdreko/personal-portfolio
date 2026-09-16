@@ -1,6 +1,11 @@
 import { rateLimit } from "@/server/lib/rate-limit";
 import { cannedReply } from "@/features/chat/data/canned";
 import { answerFromProfile, ChatConfigError } from "@/server/services/chat";
+import {
+  isTurnstileConfigured,
+  TurnstileError,
+  verifyTurnstileToken,
+} from "@/server/services/turnstile";
 import { chatRequestSchema } from "@/server/validators/chat";
 
 const WINDOW_MS = 10 * 60 * 1000;
@@ -20,7 +25,8 @@ function lastUserText(messages: { role: string; text: string }[]) {
 }
 
 export async function POST(request: Request) {
-  const limited = rateLimit(`chat:${clientKey(request)}`, MAX_REQUESTS, WINDOW_MS);
+  const ip = clientKey(request);
+  const limited = rateLimit(`chat:${ip}`, MAX_REQUESTS, WINDOW_MS);
   if (!limited.ok) {
     return Response.json(
       { error: "Too many questions. Try again in a few minutes." },
@@ -48,6 +54,40 @@ export async function POST(request: Request) {
 
   if (parsed.data.messages.at(-1)?.role !== "user") {
     return Response.json({ error: "Ask a question to continue." }, { status: 400 });
+  }
+
+  const openAiConfigured = Boolean(process.env.OPENAI_API_KEY?.trim());
+  if (
+    process.env.NODE_ENV === "production" &&
+    openAiConfigured &&
+    !isTurnstileConfigured()
+  ) {
+    return Response.json(
+      { error: "Chat is temporarily unavailable." },
+      { status: 503 },
+    );
+  }
+
+  if (isTurnstileConfigured()) {
+    const token = parsed.data.turnstileToken;
+    if (!token) {
+      return Response.json(
+        { error: "Bot check required. Refresh and try again." },
+        { status: 403 },
+      );
+    }
+
+    try {
+      await verifyTurnstileToken(token, ip === "local" ? undefined : ip);
+    } catch (error) {
+      if (error instanceof TurnstileError) {
+        return Response.json({ error: error.message }, { status: 403 });
+      }
+      return Response.json(
+        { error: "Bot check failed. Refresh and try again." },
+        { status: 403 },
+      );
+    }
   }
 
   const question = lastUserText(parsed.data.messages);

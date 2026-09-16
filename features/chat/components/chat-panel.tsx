@@ -152,6 +152,7 @@ export function ChatPanel({
                       }
                     }}
                     rows={1}
+                    maxLength={500}
                     placeholder="Ask about Fabian…"
                     className="chat-scroll max-h-24 min-h-6 flex-1 resize-none bg-transparent py-1.5 text-sm outline-none placeholder:text-fg-dim"
                   />

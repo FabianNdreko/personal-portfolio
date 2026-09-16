@@ -7,6 +7,7 @@ export const chatMessageSchema = z.object({
 
 export const chatRequestSchema = z.object({
   messages: z.array(chatMessageSchema).min(1).max(12),
+  turnstileToken: z.string().trim().min(1).max(2048).optional(),
 });
 
 export type ChatRequest = z.infer<typeof chatRequestSchema>;

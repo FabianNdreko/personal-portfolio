@@ -2,18 +2,27 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { WELCOME_MESSAGE } from "../data/canned";
+import { useTurnstile } from "../hooks/use-turnstile";
 import { requestChatReply } from "../queries";
 import type { ChatMessage } from "../types";
 import { ChatLauncher } from "./chat-launcher";
 import { ChatPanel } from "./chat-panel";
 
-export function ChatWidget() {
+type ChatWidgetProps = {
+  turnstileSiteKey?: string;
+};
+
+export function ChatWidget({ turnstileSiteKey = "" }: ChatWidgetProps) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
   const listRef = useRef<HTMLDivElement>(null);
   const idPrefix = useId();
+  const { containerRef: turnstileRef, getToken } = useTurnstile(
+    open,
+    turnstileSiteKey,
+  );
 
   useEffect(() => {
     const node = listRef.current;
@@ -51,7 +60,8 @@ export function ChatWidget() {
     setThinking(true);
 
     try {
-      const reply = await requestChatReply(nextMessages);
+      const turnstileToken = await getToken();
+      const reply = await requestChatReply(nextMessages, turnstileToken);
       setMessages((current) => [
         ...current,
         {
@@ -79,6 +89,11 @@ export function ChatWidget() {
 
   return (
     <>
+      <div
+        ref={turnstileRef}
+        className="pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0"
+        aria-hidden
+      />
       <ChatPanel
         open={open}
         messages={messages}

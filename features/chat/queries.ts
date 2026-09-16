@@ -7,6 +7,7 @@ type ChatApiResponse = {
 
 export async function requestChatReply(
   messages: ChatMessage[],
+  turnstileToken?: string,
 ): Promise<string> {
   const response = await fetch("/api/chat", {
     method: "POST",
@@ -15,6 +16,7 @@ export async function requestChatReply(
       messages: messages
         .filter((message) => message.id !== "welcome")
         .map(({ role, text }) => ({ role, text })),
+      ...(turnstileToken ? { turnstileToken } : {}),
     }),
   });
 
