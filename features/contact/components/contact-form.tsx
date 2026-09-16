@@ -226,7 +226,7 @@ function Field({
   multiline = false,
 }: FieldProps) {
   const controlClass = cn(
-    "w-full border-0 border-b border-border-strong bg-transparent py-2 text-[15px] text-foreground outline-none transition-colors",
+    "w-full border-0 border-b border-border-strong bg-transparent py-2 text-base text-foreground outline-none transition-colors",
     "placeholder:text-fg-dim focus:border-accent",
     error && "border-destructive text-destructive",
   );
