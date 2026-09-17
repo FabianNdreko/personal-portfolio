@@ -5,5 +5,10 @@ export default function SiteLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <SiteShell>{children}</SiteShell>;
+  const turnstileSiteKey =
+    process.env.CLOUDFLARE_TURNSTILE_SITE_KEY?.trim() || "";
+
+  return (
+    <SiteShell turnstileSiteKey={turnstileSiteKey}>{children}</SiteShell>
+  );
 }

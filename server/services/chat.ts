@@ -1,5 +1,4 @@
 import OpenAI from "openai";
-import type { ChatRequest } from "@/server/validators/chat";
 import { buildProfileContext, CHAT_SYSTEM_PROMPT } from "./chat-context";
 
 export class ChatConfigError extends Error {
@@ -17,9 +16,18 @@ function getClient() {
   return new OpenAI({ apiKey });
 }
 
-export async function answerFromProfile(input: ChatRequest): Promise<string> {
+const ALLOWED_MODELS = new Set(["gpt-4o-mini"]);
+
+function resolveModel() {
+  const requested = process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini";
+  if (ALLOWED_MODELS.has(requested)) return requested;
+  return "gpt-4o-mini";
+}
+
+/** Answers from fixed profile context + a single user question (no client history). */
+export async function answerFromProfile(question: string): Promise<string> {
   const client = getClient();
-  const model = process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini";
+  const model = resolveModel();
 
   const completion = await client.chat.completions.create({
     model,
@@ -30,10 +38,10 @@ export async function answerFromProfile(input: ChatRequest): Promise<string> {
         role: "system",
         content: `${CHAT_SYSTEM_PROMPT}\n\nProfile context:\n${buildProfileContext()}`,
       },
-      ...input.messages.map((message) => ({
-        role: message.role,
-        content: message.text,
-      })),
+      {
+        role: "user",
+        content: question,
+      },
     ],
   });
 

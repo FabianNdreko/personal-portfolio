@@ -97,7 +97,7 @@ export function ChatPanel({
                   >
                     <div
                       className={cn(
-                        "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[13.5px] leading-relaxed break-words whitespace-pre-wrap",
+                        "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[13.5px] leading-relaxed wrap-break-word whitespace-pre-wrap",
                         message.role === "user"
                           ? "rounded-br-md bg-accent text-primary-foreground"
                           : "rounded-bl-md border border-border bg-[#121212] text-foreground",
@@ -152,8 +152,9 @@ export function ChatPanel({
                       }
                     }}
                     rows={1}
+                    maxLength={500}
                     placeholder="Ask about Fabian…"
-                    className="chat-scroll max-h-24 min-h-6 flex-1 resize-none bg-transparent py-1.5 text-sm outline-none placeholder:text-fg-dim"
+                    className="chat-scroll max-h-24 min-h-6 flex-1 resize-none bg-transparent py-1.5 text-base outline-none placeholder:text-fg-dim"
                   />
                   <button
                     type="submit"

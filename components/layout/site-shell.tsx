@@ -6,9 +6,10 @@ import { Topbar } from "./topbar";
 
 type SiteShellProps = {
   children: React.ReactNode;
+  turnstileSiteKey?: string;
 };
 
-export function SiteShell({ children }: SiteShellProps) {
+export function SiteShell({ children, turnstileSiteKey = "" }: SiteShellProps) {
   const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export function SiteShell({ children }: SiteShellProps) {
       <div className="min-h-screen min-w-0 overflow-x-clip pb-[calc(5.5rem+env(safe-area-inset-bottom))]">
         {children}
       </div>
-      <ChatWidget />
+      <ChatWidget turnstileSiteKey={turnstileSiteKey} />
     </>
   );
 }

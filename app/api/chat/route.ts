@@ -1,10 +1,18 @@
-import { rateLimit } from "@/server/lib/rate-limit";
-import { cannedReply } from "@/features/chat/data/canned";
+import { isChatEnabled } from "@/server/lib/chat-enabled";
+import { logChatEvent, redactClientKey } from "@/server/lib/chat-log";
+import {
+  isDurableRateLimitConfigured,
+  rateLimitChat,
+} from "@/server/lib/rate-limit";
 import { answerFromProfile, ChatConfigError } from "@/server/services/chat";
+import {
+  isTurnstileConfigured,
+  TurnstileError,
+  verifyTurnstileToken,
+} from "@/server/services/turnstile";
 import { chatRequestSchema } from "@/server/validators/chat";
 
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_REQUESTS = 10;
+const UNAVAILABLE = "Chat is temporarily unavailable. Try again later.";
 
 function clientKey(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -12,16 +20,22 @@ function clientKey(request: Request) {
   return ip || request.headers.get("x-real-ip") || "local";
 }
 
-function lastUserText(messages: { role: string; text: string }[]) {
-  for (let i = messages.length - 1; i >= 0; i -= 1) {
-    if (messages[i]?.role === "user") return messages[i].text;
-  }
-  return "";
-}
-
 export async function POST(request: Request) {
-  const limited = rateLimit(`chat:${clientKey(request)}`, MAX_REQUESTS, WINDOW_MS);
+  const ip = clientKey(request);
+  const client = redactClientKey(ip);
+
+  if (!isChatEnabled()) {
+    logChatEvent("chat_disabled", { client });
+    return Response.json({ error: UNAVAILABLE }, { status: 503 });
+  }
+
+  const limited = await rateLimitChat(ip);
   if (!limited.ok) {
+    logChatEvent("rate_limited", {
+      client,
+      status: 429,
+      retryAfterSec: limited.retryAfterSec,
+    });
     return Response.json(
       { error: "Too many questions. Try again in a few minutes." },
       {
@@ -46,21 +60,67 @@ export async function POST(request: Request) {
     );
   }
 
-  if (parsed.data.messages.at(-1)?.role !== "user") {
-    return Response.json({ error: "Ask a question to continue." }, { status: 400 });
+  const question = parsed.data.message;
+
+  const openAiConfigured = Boolean(process.env.OPENAI_API_KEY?.trim());
+  if (!openAiConfigured) {
+    logChatEvent("openai_missing", { client, status: 503 });
+    return Response.json({ error: UNAVAILABLE }, { status: 503 });
   }
 
-  const question = lastUserText(parsed.data.messages);
+  if (process.env.NODE_ENV === "production") {
+    if (!isTurnstileConfigured()) {
+      logChatEvent("turnstile_not_configured", { client, status: 503 });
+      return Response.json({ error: UNAVAILABLE }, { status: 503 });
+    }
+    if (!isDurableRateLimitConfigured()) {
+      logChatEvent("upstash_not_configured", { client, status: 503 });
+      return Response.json({ error: UNAVAILABLE }, { status: 503 });
+    }
+  }
+
+  if (isTurnstileConfigured()) {
+    const token = parsed.data.turnstileToken;
+    if (!token) {
+      logChatEvent("turnstile_missing_token", { client, status: 403 });
+      return Response.json(
+        { error: "Bot check required. Refresh and try again." },
+        { status: 403 },
+      );
+    }
+
+    try {
+      await verifyTurnstileToken(token, ip === "local" ? undefined : ip);
+    } catch (error) {
+      logChatEvent("turnstile_failed", {
+        client,
+        status: 403,
+        reason: error instanceof TurnstileError ? error.message : "unknown",
+      });
+      if (error instanceof TurnstileError) {
+        return Response.json({ error: error.message }, { status: 403 });
+      }
+      return Response.json(
+        { error: "Bot check failed. Refresh and try again." },
+        { status: 403 },
+      );
+    }
+  }
 
   try {
-    const reply = await answerFromProfile(parsed.data);
+    const reply = await answerFromProfile(question);
     return Response.json({ reply });
   } catch (error) {
     if (error instanceof ChatConfigError) {
-      return Response.json({ reply: cannedReply(question) });
+      logChatEvent("openai_config_error", { client, status: 503 });
+      return Response.json({ error: UNAVAILABLE }, { status: 503 });
     }
 
     console.error("chat", error);
-    return Response.json({ reply: cannedReply(question) });
+    logChatEvent("openai_error", { client, status: 502 });
+    return Response.json(
+      { error: "Could not answer just now. Try again." },
+      { status: 502 },
+    );
   }
 }
