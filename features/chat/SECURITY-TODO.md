@@ -10,7 +10,9 @@ Track hardening for the public AI chat (`POST /api/chat`).
   - 10 requests / 10 minutes per IP
   - 20 requests / day per IP
   - In-memory fallback when Upstash env is missing (local only)
-- [x] Input limits (Zod: max 500 chars, max 12 messages)
+- [x] Input limits (Zod: max 500 chars per question)
+- [x] Only the latest user message is sent to OpenAI (no client history)
+- [x] No silent canned fallback — if AI is down / missing key, return an error
 - [x] Soft system-prompt guardrails (profile-only)
 - [x] `max_tokens: 400` on OpenAI replies
 - [x] Production fail-closed if OpenAI is set but Turnstile secret is missing
@@ -19,8 +21,8 @@ Track hardening for the public AI chat (`POST /api/chat`).
 ## To do (recommended order)
 
 ### 1. Trust only the last user message
-- [ ] Do not trust client-sent `assistant` history
-- [ ] Server should send OpenAI only the latest user question (+ fixed system/profile context)
+- [x] Do not trust client-sent `assistant` history
+- [x] Server should send OpenAI only the latest user question (+ fixed system/profile context)
 - [ ] Optional later: short server-side session history if multi-turn is needed
 
 ### 2. OpenAI spend controls (dashboard — no code)

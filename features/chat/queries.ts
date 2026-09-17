@@ -9,13 +9,19 @@ export async function requestChatReply(
   messages: ChatMessage[],
   turnstileToken?: string,
 ): Promise<string> {
+  const lastUser = [...messages]
+    .reverse()
+    .find((message) => message.role === "user" && message.id !== "welcome");
+
+  if (!lastUser?.text.trim()) {
+    throw new Error("Ask a question to continue.");
+  }
+
   const response = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      messages: messages
-        .filter((message) => message.id !== "welcome")
-        .map(({ role, text }) => ({ role, text })),
+      message: lastUser.text.trim().slice(0, 500),
       ...(turnstileToken ? { turnstileToken } : {}),
     }),
   });

@@ -1,5 +1,4 @@
 import { rateLimitChat } from "@/server/lib/rate-limit";
-import { cannedReply } from "@/features/chat/data/canned";
 import { answerFromProfile, ChatConfigError } from "@/server/services/chat";
 import {
   isTurnstileConfigured,
@@ -8,17 +7,12 @@ import {
 } from "@/server/services/turnstile";
 import { chatRequestSchema } from "@/server/validators/chat";
 
+const UNAVAILABLE = "Chat is temporarily unavailable. Try again later.";
+
 function clientKey(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
   const ip = forwarded?.split(",")[0]?.trim();
   return ip || request.headers.get("x-real-ip") || "local";
-}
-
-function lastUserText(messages: { role: string; text: string }[]) {
-  for (let i = messages.length - 1; i >= 0; i -= 1) {
-    if (messages[i]?.role === "user") return messages[i].text;
-  }
-  return "";
 }
 
 export async function POST(request: Request) {
@@ -49,20 +43,15 @@ export async function POST(request: Request) {
     );
   }
 
-  if (parsed.data.messages.at(-1)?.role !== "user") {
-    return Response.json({ error: "Ask a question to continue." }, { status: 400 });
-  }
+  const question = parsed.data.message;
 
   const openAiConfigured = Boolean(process.env.OPENAI_API_KEY?.trim());
-  if (
-    process.env.NODE_ENV === "production" &&
-    openAiConfigured &&
-    !isTurnstileConfigured()
-  ) {
-    return Response.json(
-      { error: "Chat is temporarily unavailable." },
-      { status: 503 },
-    );
+  if (!openAiConfigured) {
+    return Response.json({ error: UNAVAILABLE }, { status: 503 });
+  }
+
+  if (process.env.NODE_ENV === "production" && !isTurnstileConfigured()) {
+    return Response.json({ error: UNAVAILABLE }, { status: 503 });
   }
 
   if (isTurnstileConfigured()) {
@@ -87,17 +76,18 @@ export async function POST(request: Request) {
     }
   }
 
-  const question = lastUserText(parsed.data.messages);
-
   try {
-    const reply = await answerFromProfile(parsed.data);
+    const reply = await answerFromProfile(question);
     return Response.json({ reply });
   } catch (error) {
     if (error instanceof ChatConfigError) {
-      return Response.json({ reply: cannedReply(question) });
+      return Response.json({ error: UNAVAILABLE }, { status: 503 });
     }
 
     console.error("chat", error);
-    return Response.json({ reply: cannedReply(question) });
+    return Response.json(
+      { error: "Could not answer just now. Try again." },
+      { status: 502 },
+    );
   }
 }
