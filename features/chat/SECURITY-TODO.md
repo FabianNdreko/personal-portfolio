@@ -10,58 +10,42 @@ Track hardening for the public AI chat (`POST /api/chat`).
   - 10 requests / 10 minutes per IP
   - 20 requests / day per IP
   - In-memory fallback when Upstash env is missing (local only)
+  - Production requires Upstash when OpenAI is enabled
 - [x] Input limits (Zod: max 500 chars per question)
 - [x] Only the latest user message is sent to OpenAI (no client history)
 - [x] No silent canned fallback — if AI is down / missing key, return an error
 - [x] Soft system-prompt guardrails (profile-only)
 - [x] `max_tokens: 400` on OpenAI replies
+- [x] Model allowlist (`gpt-4o-mini` only)
+- [x] Kill switch via `CHAT_ENABLED` (default on; `false` → 503)
+- [x] Abuse logging for 403/429/config failures (redacted IP, no message body)
 - [x] Production fail-closed if OpenAI is set but Turnstile secret is missing
 - [x] Mobile: chat/contact inputs at 16px (no iOS zoom on focus)
 
-## To do (recommended order)
+## To do (you — OpenAI dashboard)
 
-### 1. Trust only the last user message
-- [x] Do not trust client-sent `assistant` history
-- [x] Server should send OpenAI only the latest user question (+ fixed system/profile context)
+### OpenAI spend controls
+- [ ] Add ~$5 credits / payment method in Billing
+- [ ] After leaving Free tier (if Spend appears): set monthly limit + **Enforce hard limit**
+- [ ] Enable spend alerts (e.g. 50% / 80%)
+- [ ] Prefer a dedicated API key/project only for this portfolio
+
+## Optional later
+
 - [ ] Optional later: short server-side session history if multi-turn is needed
-
-### 2. OpenAI spend controls (dashboard — no code)
-- [ ] Set a hard monthly budget / usage limit in OpenAI
-- [ ] Enable billing alerts
-- [ ] Use a dedicated API key/project only for this portfolio
-
-### 3. Kill switch
-- [ ] Add `CHAT_ENABLED` env (default on)
-- [ ] When `false`, `/api/chat` returns 503 (or canned “unavailable”) without calling OpenAI
-
-### 4. Abuse logging
-- [ ] Log Turnstile failures (403)
-- [ ] Log rate-limit hits (429)
-- [ ] Avoid storing full message text long-term unless needed
-
-### 5. Optional hardening
-- [ ] Allowlist model to `gpt-4o-mini` only (ignore arbitrary `OPENAI_MODEL` in prod)
 - [ ] OpenAI Moderation API on user input
 - [ ] Origin/Referer check for `/api/chat` (your domain only)
-- [ ] Require Upstash in production when OpenAI is enabled (fail closed like Turnstile)
 
 ## Env vars (production)
 
-Required for full protection:
-
 ```bash
 OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
+CHAT_ENABLED=true
 CLOUDFLARE_TURNSTILE_SITE_KEY=
 CLOUDFLARE_TURNSTILE_SECRET_KEY=
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
-```
-
-Optional / planned:
-
-```bash
-OPENAI_MODEL=gpt-4o-mini
-CHAT_ENABLED=true
 WEB3FORMS_ACCESS_KEY=
 ```
 
@@ -73,4 +57,5 @@ WEB3FORMS_ACCESS_KEY=
 - [ ] Redeploy after env changes
 - [ ] Smoke test: chat works in browser
 - [ ] Smoke test: `POST /api/chat` without Turnstile token → 403
-- [ ] OpenAI budget set
+- [ ] Smoke test: `CHAT_ENABLED=false` → 503
+- [ ] OpenAI credits + spend limit / alerts (when available)
