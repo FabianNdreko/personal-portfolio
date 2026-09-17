@@ -10,14 +10,14 @@ type Pending = {
 };
 
 /**
- * Invisible Turnstile widget. Renders into a hidden container while the chat is open.
- * Call `getToken()` before each API request.
- * `siteKey` is injected from the server (no NEXT_PUBLIC_ env).
+ * Managed Turnstile widget. Hidden unless Cloudflare needs a click
+ * (`appearance: interaction-only`). Container can grow so a checkbox is usable.
  */
 export function useTurnstile(active: boolean, siteKey: string) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const turnstileRef = useRef<TurnstileApi | null>(null);
+  const tokenRef = useRef<string | null>(null);
   const pendingRef = useRef<Pending | null>(null);
   const configured = Boolean(siteKey);
 
@@ -29,36 +29,61 @@ export function useTurnstile(active: boolean, siteKey: string) {
     if (error) pending.reject(error);
   }, []);
 
+  const settleToken = useCallback((token: string) => {
+    tokenRef.current = token;
+    const pending = pendingRef.current;
+    if (!pending) return;
+    window.clearTimeout(pending.timer);
+    pendingRef.current = null;
+    pending.resolve(token);
+  }, []);
+
   useEffect(() => {
-    if (!active || !configured || !containerRef.current) return;
+    if (!active || !configured) return;
 
     let cancelled = false;
-    const container = containerRef.current;
 
     loadTurnstileScript()
-      .then((turnstile) => {
-        if (cancelled || !container) return;
+      .then(async (turnstile) => {
+        const started = Date.now();
+        while (!containerRef.current && Date.now() - started < 2000) {
+          await new Promise((resolve) =>
+            requestAnimationFrame(() => resolve(undefined)),
+          );
+        }
+        if (cancelled) return;
+
+        const container = containerRef.current;
+        if (!container) {
+          throw new Error("Bot check container is missing.");
+        }
+
         turnstileRef.current = turnstile;
+        tokenRef.current = null;
 
         const widgetId = turnstile.render(container, {
           sitekey: siteKey,
-          size: "invisible",
-          execution: "execute",
-          appearance: "execute",
+          theme: "dark",
+          size: "flexible",
+          action: "chat",
+          appearance: "interaction-only",
           callback: (token) => {
-            const pending = pendingRef.current;
-            if (!pending) return;
-            window.clearTimeout(pending.timer);
-            pendingRef.current = null;
-            pending.resolve(token);
+            if (!cancelled) settleToken(token);
           },
           "error-callback": () => {
+            tokenRef.current = null;
             clearPending(new Error("Bot check failed. Refresh and try again."));
           },
           "expired-callback": () => {
-            clearPending(new Error("Bot check expired. Try again."));
+            tokenRef.current = null;
+            try {
+              if (widgetIdRef.current) turnstile.reset(widgetIdRef.current);
+            } catch {
+              // ignore
+            }
           },
           "timeout-callback": () => {
+            tokenRef.current = null;
             clearPending(new Error("Bot check timed out. Try again."));
           },
         });
@@ -67,13 +92,16 @@ export function useTurnstile(active: boolean, siteKey: string) {
       })
       .catch(() => {
         if (!cancelled) {
-          clearPending(new Error("Bot check failed to load. Refresh and try again."));
+          clearPending(
+            new Error("Bot check failed to load. Refresh and try again."),
+          );
         }
       });
 
     return () => {
       cancelled = true;
       clearPending(new Error("Chat closed."));
+      tokenRef.current = null;
       const widgetId = widgetIdRef.current;
       const turnstile = turnstileRef.current;
       widgetIdRef.current = null;
@@ -81,14 +109,28 @@ export function useTurnstile(active: boolean, siteKey: string) {
         try {
           turnstile.remove(widgetId);
         } catch {
-          // ignore cleanup errors
+          // ignore
         }
       }
     };
-  }, [active, clearPending, configured, siteKey]);
+  }, [active, clearPending, configured, settleToken, siteKey]);
+
+  const refresh = useCallback(() => {
+    tokenRef.current = null;
+    const turnstile = turnstileRef.current;
+    const widgetId = widgetIdRef.current;
+    if (!turnstile || !widgetId) return;
+    try {
+      turnstile.reset(widgetId);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const getToken = useCallback(async (): Promise<string | undefined> => {
     if (!configured) return undefined;
+
+    if (tokenRef.current) return tokenRef.current;
 
     const turnstile = turnstileRef.current;
     const widgetId = widgetIdRef.current;
@@ -96,28 +138,27 @@ export function useTurnstile(active: boolean, siteKey: string) {
       throw new Error("Bot check is not ready yet. Wait a moment and try again.");
     }
 
-    clearPending(new Error("Bot check superseded."));
+    const fromWidget = turnstile.getResponse(widgetId);
+    if (fromWidget) {
+      tokenRef.current = fromWidget;
+      return fromWidget;
+    }
 
     return new Promise<string>((resolve, reject) => {
       const timer = window.setTimeout(() => {
         if (pendingRef.current?.timer === timer) {
           pendingRef.current = null;
-          reject(new Error("Bot check timed out. Try again."));
+          reject(
+            new Error(
+              "Complete the Cloudflare check under the input, then send again.",
+            ),
+          );
         }
-      }, 30_000);
+      }, 45_000);
 
       pendingRef.current = { resolve, reject, timer };
-
-      try {
-        turnstile.reset(widgetId);
-        turnstile.execute(widgetId);
-      } catch {
-        window.clearTimeout(timer);
-        pendingRef.current = null;
-        reject(new Error("Bot check failed. Refresh and try again."));
-      }
     });
-  }, [clearPending, configured]);
+  }, [configured]);
 
-  return { containerRef, getToken, configured };
+  return { containerRef, getToken, refresh, configured };
 }

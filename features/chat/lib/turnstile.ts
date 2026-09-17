@@ -4,8 +4,9 @@ const SCRIPT_SRC =
 
 type TurnstileRenderOptions = {
   sitekey: string;
-  size?: "normal" | "compact" | "flexible" | "invisible";
-  execution?: "render" | "execute";
+  theme?: "auto" | "light" | "dark";
+  size?: "normal" | "compact" | "flexible";
+  action?: string;
   appearance?: "always" | "execute" | "interaction-only";
   callback?: (token: string) => void;
   "error-callback"?: (errorCode?: string) => void;
@@ -20,7 +21,6 @@ export type TurnstileApi = {
   ) => string;
   reset: (widgetId?: string) => void;
   remove: (widgetId?: string) => void;
-  execute: (widgetId?: string) => void;
   getResponse: (widgetId?: string) => string | undefined;
 };
 
