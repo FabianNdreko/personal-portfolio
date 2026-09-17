@@ -1,4 +1,4 @@
-import { isChatEnabled } from "@/server/lib/chat-enabled";
+import { isChatAiEnabled, isChatEnabled } from "@/server/lib/chat-enabled";
 import { logChatEvent, redactClientKey } from "@/server/lib/chat-log";
 import {
   isDurableRateLimitConfigured,
@@ -62,12 +62,6 @@ export async function POST(request: Request) {
 
   const question = parsed.data.message;
 
-  const openAiConfigured = Boolean(process.env.OPENAI_API_KEY?.trim());
-  if (!openAiConfigured) {
-    logChatEvent("openai_missing", { client, status: 503 });
-    return Response.json({ error: UNAVAILABLE }, { status: 503 });
-  }
-
   if (process.env.NODE_ENV === "production") {
     if (!isTurnstileConfigured()) {
       logChatEvent("turnstile_not_configured", { client, status: 503 });
@@ -105,6 +99,19 @@ export async function POST(request: Request) {
         { status: 403 },
       );
     }
+  }
+
+  if (!isChatAiEnabled()) {
+    logChatEvent("ai_skipped", { client });
+    return Response.json({
+      reply: "Bot check passed. AI is turned off (CHAT_AI_ENABLED=false).",
+    });
+  }
+
+  const openAiConfigured = Boolean(process.env.OPENAI_API_KEY?.trim());
+  if (!openAiConfigured) {
+    logChatEvent("openai_missing", { client, status: 503 });
+    return Response.json({ error: UNAVAILABLE }, { status: 503 });
   }
 
   try {

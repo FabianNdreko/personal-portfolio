@@ -18,6 +18,7 @@ type ChatPanelProps = {
   onSend: (text?: string) => void;
   onClose: () => void;
   listRef: RefObject<HTMLDivElement | null>;
+  turnstileRef: RefObject<HTMLDivElement | null>;
 };
 
 export function ChatPanel({
@@ -29,6 +30,7 @@ export function ChatPanel({
   onSend,
   onClose,
   listRef,
+  turnstileRef,
 }: ChatPanelProps) {
   const showSuggestions =
     messages.length <= 1 && !thinking && input.trim().length === 0;
@@ -47,7 +49,7 @@ export function ChatPanel({
           className="chat-scroll fixed right-3 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-50 w-[min(100%-1.5rem,24rem)] sm:right-5 sm:bottom-[calc(6.5rem+env(safe-area-inset-bottom))]"
         >
           <div className="overflow-hidden rounded-2xl bg-linear-to-br from-accent/50 via-border to-accent/15 p-px shadow-[0_24px_80px_rgba(0,0,0,0.55),0_0_40px_rgba(232,184,74,0.14)]">
-            <div className="chat-scroll flex h-[min(32rem,70vh)] flex-col overflow-hidden rounded-[15px] bg-background/90 backdrop-blur-xl">
+            <div className="chat-scroll flex h-[min(36rem,78vh)] flex-col overflow-hidden rounded-[15px] bg-background/90 backdrop-blur-xl">
               <header className="relative border-b border-border px-4 py-3.5">
                 <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-accent to-transparent" />
                 <div className="flex items-center gap-3">
@@ -165,6 +167,10 @@ export function ChatPanel({
                     <PaperPlaneTilt size={15} weight="fill" />
                   </button>
                 </div>
+                <div
+                  ref={turnstileRef}
+                  className="relative z-10 mt-2 w-full min-h-0 overflow-visible"
+                />
               </form>
             </div>
           </div>

@@ -19,10 +19,11 @@ export function ChatWidget({ turnstileSiteKey = "" }: ChatWidgetProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
   const listRef = useRef<HTMLDivElement>(null);
   const idPrefix = useId();
-  const { containerRef: turnstileRef, getToken } = useTurnstile(
-    open,
-    turnstileSiteKey,
-  );
+  const {
+    containerRef: turnstileRef,
+    getToken,
+    refresh: refreshTurnstile,
+  } = useTurnstile(open, turnstileSiteKey);
 
   useEffect(() => {
     const node = listRef.current;
@@ -62,6 +63,7 @@ export function ChatWidget({ turnstileSiteKey = "" }: ChatWidgetProps) {
     try {
       const turnstileToken = await getToken();
       const reply = await requestChatReply(nextMessages, turnstileToken);
+      refreshTurnstile();
       setMessages((current) => [
         ...current,
         {
@@ -71,6 +73,7 @@ export function ChatWidget({ turnstileSiteKey = "" }: ChatWidgetProps) {
         },
       ]);
     } catch (error) {
+      refreshTurnstile();
       setMessages((current) => [
         ...current,
         {
@@ -89,11 +92,6 @@ export function ChatWidget({ turnstileSiteKey = "" }: ChatWidgetProps) {
 
   return (
     <>
-      <div
-        ref={turnstileRef}
-        className="pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0"
-        aria-hidden
-      />
       <ChatPanel
         open={open}
         messages={messages}
@@ -103,6 +101,7 @@ export function ChatWidget({ turnstileSiteKey = "" }: ChatWidgetProps) {
         onSend={send}
         onClose={() => setOpen(false)}
         listRef={listRef}
+        turnstileRef={turnstileRef}
       />
       <ChatLauncher open={open} onToggle={() => setOpen((value) => !value)} />
     </>
