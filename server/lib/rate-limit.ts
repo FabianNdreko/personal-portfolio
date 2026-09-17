@@ -1,9 +1,9 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-const SHORT_LIMIT = 10;
+const SHORT_LIMIT = 20;
 const SHORT_WINDOW_MS = 10 * 60 * 1000;
-const DAILY_LIMIT = 20;
+const DAILY_LIMIT = 40;
 
 type RateLimitResult =
   | { ok: true }
