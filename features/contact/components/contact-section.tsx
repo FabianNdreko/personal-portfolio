@@ -4,6 +4,7 @@ import { ContactForm } from "./contact-form";
 
 export function ContactSection() {
   const year = new Date().getFullYear();
+  const accessKey = process.env.WEB3FORMS_ACCESS_KEY?.trim() ?? "";
 
   return (
     <section id="contact" className="scroll-mt-24">
@@ -89,7 +90,7 @@ export function ContactSection() {
 
           <div className="relative min-w-0">
             <div className="rounded-2xl border border-border bg-elevated/90 px-4 py-6 shadow-[0_24px_80px_rgba(0,0,0,0.45),0_0_40px_rgba(232,184,74,0.08)] backdrop-blur-sm sm:px-7 sm:py-8">
-              <ContactForm />
+              <ContactForm accessKey={accessKey} />
             </div>
           </div>
         </div>
