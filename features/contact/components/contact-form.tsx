@@ -1,22 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 type FieldErrors = {
   name?: string;
   email?: string;
-  message?: string;
 };
 
-type Status = "idle" | "submitting" | "success" | "mailto" | "error";
+type Status = "idle" | "submitting" | "success" | "error";
+type ErrorReason = "config" | "submit";
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
-const WEB3FORMS_ACCESS_KEY = process.env.WEB3FORMS_ACCESS_KEY;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function validate(name: string, email: string, message: string): FieldErrors {
+function validate(name: string, email: string): FieldErrors {
   const errors: FieldErrors = {};
 
   if (name.trim().length < 2) {
@@ -25,27 +23,28 @@ function validate(name: string, email: string, message: string): FieldErrors {
   if (!EMAIL_PATTERN.test(email.trim())) {
     errors.email = "Please enter a valid email.";
   }
-  if (message.trim().length < 10) {
-    errors.message = "A little more detail helps — at least a sentence.";
-  }
 
   return errors;
 }
 
-function mailtoHref(
-  name: string,
-  email: string,
-  message: string,
-  phone: string,
-) {
-  const subject = `Portfolio message from ${name}`;
-  const phoneLine = phone.trim() ? `\nPhone: ${phone.trim()}` : "";
-  const body = `${message}\n\n— ${name}\n${email}${phoneLine}`;
-  return `mailto:${SITE.contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
+const ERROR_COPY: Record<ErrorReason, { title: string; body: string }> = {
+  config: {
+    title: "Form isn’t configured yet.",
+    body: "Add your Web3Forms access key to WEB3FORMS_ACCESS_KEY in .env, then restart the dev server.",
+  },
+  submit: {
+    title: "Couldn’t send message.",
+    body: "Something went wrong sending your message. Please try again in a moment.",
+  },
+};
 
-export function ContactForm() {
+type ContactFormProps = {
+  accessKey: string;
+};
+
+export function ContactForm({ accessKey }: ContactFormProps) {
   const [status, setStatus] = useState<Status>("idle");
+  const [errorReason, setErrorReason] = useState<ErrorReason>("submit");
   const [errors, setErrors] = useState<FieldErrors>({});
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -56,25 +55,26 @@ export function ContactForm() {
     const email = String(data.get("email") ?? "");
     const phone = String(data.get("phone") ?? "");
     const message = String(data.get("message") ?? "");
-    const honeypot = String(data.get("company") ?? "");
+    const company = String(data.get("company") ?? "");
 
-    if (honeypot) {
+    if (company) {
       setStatus("success");
       return;
     }
 
-    const nextErrors = validate(name, email, message);
+    const nextErrors = validate(name, email);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
       return;
     }
 
-    setStatus("submitting");
-
-    if (!WEB3FORMS_ACCESS_KEY) {
+    if (!accessKey) {
+      setErrorReason("config");
       setStatus("error");
       return;
     }
+
+    setStatus("submitting");
 
     try {
       const response = await fetch(WEB3FORMS_ENDPOINT, {
@@ -84,16 +84,19 @@ export function ContactForm() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
+          access_key: accessKey,
           name: name.trim(),
+          from_name: name.trim(),
           email: email.trim(),
           phone: phone.trim() || undefined,
-          message: message.trim(),
+          message: message.trim() || "(No message)",
           subject: `Portfolio message from ${name.trim()}`,
         }),
       });
 
-      const result = (await response.json()) as { success?: boolean };
+      const result = (await response.json()) as {
+        success?: boolean;
+      };
 
       if (!response.ok || !result.success) {
         throw new Error("submit failed");
@@ -102,28 +105,27 @@ export function ContactForm() {
       form.reset();
       setStatus("success");
     } catch {
-      window.location.href = mailtoHref(
-        name.trim(),
-        email.trim(),
-        message.trim(),
-        phone,
-      );
-      setStatus("mailto");
+      setErrorReason("submit");
+      setStatus("error");
     }
   }
 
-  if (status === "success" || status === "mailto" || status === "error") {
+  if (status === "success" || status === "error") {
+    const copy =
+      status === "error"
+        ? ERROR_COPY[errorReason]
+        : {
+            title: "Message sent.",
+            body: "Thanks — I’ll reply by email as soon as I can.",
+          };
+
     return (
       <div className="px-1 py-2">
         <p className="font-display text-xl font-semibold tracking-tight text-foreground">
-          {status === "error" ? "Form isn’t configured yet." : "Message sent."}
+          {copy.title}
         </p>
         <p className="mt-2 text-[14.5px] leading-relaxed text-muted-foreground">
-          {status === "error"
-            ? "Add your Web3Forms access key to WEB3FORMS_ACCESS_KEY in .env, then restart the dev server."
-            : status === "mailto"
-              ? "Your email app should open with the message filled in."
-              : "Thanks — I’ll reply by email as soon as I can."}
+          {copy.body}
         </p>
         <button
           type="button"
@@ -177,13 +179,7 @@ export function ContactForm() {
         type="tel"
         autoComplete="tel"
       />
-      <Field
-        id="contact-message"
-        name="message"
-        label="Message"
-        error={errors.message}
-        multiline
-      />
+      <Field id="contact-message" name="message" label="Message" multiline />
 
       <div className="relative mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[12.5px] text-muted-foreground">
